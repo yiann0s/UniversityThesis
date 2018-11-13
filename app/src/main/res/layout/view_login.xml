@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/transparent"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/loginLayout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_marginTop="31.0dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <EditText
+                android:background="@null"
+                android:fontFamily="@font/ubuntu_light"
+                android:hint="Email"
+                android:id="@+id/logEmail"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16.5dp"
+                android:layout_width="match_parent"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="15.0sp"/>
+        </LinearLayout>
+
+        <View
+            android:alpha="0.5"
+            android:background="@color/white"
+            android:layout_height="1dp"
+            android:layout_marginTop="6dp"
+            android:layout_width="336.0dp" />
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28.5dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <EditText
+                android:background="@null"
+                android:fontFamily="@font/ubuntu_light"
+                android:hint="Password"
+                android:id="@+id/logPassword"
+                android:inputType="textPassword"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16.5dp"
+                android:layout_width="match_parent"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="15.0sp" />
+        </LinearLayout>
+
+        <View
+            android:alpha="0.5"
+            android:background="@color/white"
+            android:layout_height="1dp"
+            android:layout_marginTop="6dp"
+            android:layout_width="336.0dp" />
+
+        <RelativeLayout
+            android:layout_gravity="center"
+            android:layout_height="15.0dp"
+            android:layout_marginTop="15dp"
+            android:layout_width="103.5dp">
+
+
+        </RelativeLayout>
+
+        <Button
+            android:background="@color/watermelon"
+            android:fontFamily="@font/ubuntu_light"
+            android:id="@+id/login_button"
+            android:layout_centerHorizontal="true"
+            android:layout_height="55dp"
+            android:layout_marginTop="62.5dp"
+            android:layout_width="335.0dp"
+            android:layout_gravity="center"
+            android:text="Login"
+            android:textColor="@color/white"
+            android:textSize="16.0sp"
+            style="?android:attr/borderlessButtonStyle"/>
+
+    </LinearLayout>
+</ScrollView>

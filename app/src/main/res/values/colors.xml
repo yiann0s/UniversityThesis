@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4897D8</color>
+    <color name="colorPrimaryDark">#1f5f93</color>
+    <color name="colorAccent">#fa6e59</color>
+    <color name="watermelon">#fa6e59</color>
+    <color name="colorAccent1">#f72808</color>
+    <color name="darkwatermelon">#f72808</color>
+    <color name="year">#FFDB5C</color>
+    <color name="banana">#FFDB5C</color>
+    <color name="title">#F8A055</color>
+    <color name="canteloupe">#F8A055</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="eggplant_purple">#FF6A65F8</color>
+
+    <color name="orange">#FF3909</color>
+    <color name="colorAccentDark">#00B482</color>
+
+    <color name="colorBlack">#555555</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorGrey">#707070</color>
+    <color name="colorGreyLight">#8A8A8A</color>
+</resources>

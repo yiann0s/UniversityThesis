@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">MovieRecommendationApp</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="login_str">Login</string>
+    <string name="signup_str">Sign Up</string>
+    <string name="main_tab_str">Welcome</string>
+    <string name="second_tab_str">Search</string>
+    <string name="planet_choice">ZZZZ</string>
+    <string-array name="category_array">
+        <item>Title</item>
+        <item>Released</item>
+        <item>Director</item>
+        <item>Genre</item>
+        <item>Actors</item>
+    </string-array>
+</resources>

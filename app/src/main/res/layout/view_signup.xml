@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/signupLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp">
+
+
+        <LinearLayout
+            android:layout_marginTop="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/signupEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2sp"
+                android:background="@null"
+                android:fontFamily="@font/ubuntu_light"
+                android:textSize="14.0sp"
+                android:inputType="textEmailAddress"
+                android:hint="@string/email"
+                android:textColor="@color/white"
+                android:paddingStart="10sp"
+                android:textColorHint="@color/white" />
+        </LinearLayout>
+        <View
+            android:layout_marginTop="6dp"
+            android:layout_width="336.0dp"
+            android:layout_height="1dp"
+            android:alpha="0.5"
+            android:background="@color/white"/>
+        <LinearLayout
+            android:layout_marginTop="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/signupPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:textSize="14.0sp"
+                android:background="@null"
+                android:textColor="@color/white"
+                android:inputType="textPassword"
+                android:paddingStart="10sp"
+                android:textColorHint="@color/white" />
+        </LinearLayout>
+        <View
+            android:layout_marginTop="6dp"
+            android:layout_width="336.0dp"
+            android:alpha="0.5"
+            android:layout_height="1dp"
+            android:background="@color/white"/>
+        <Button
+            android:layout_marginTop="56.5dp"
+            android:id="@+id/register_button"
+            android:layout_width="335dp"
+            android:layout_height="55dp"
+            android:textSize="16.0sp"
+            android:textColor="@color/white"
+            android:background="@color/watermelon"
+            android:fontFamily="@font/ubuntu_light"
+            android:text="@string/register" />
+
+    </LinearLayout>
+
+
+</ScrollView>
