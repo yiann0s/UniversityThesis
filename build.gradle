@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.4'
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.3'
         classpath "io.realm:realm-gradle-plugin:10.4.0"
     }
