@@ -15,7 +15,7 @@
         android:layout_marginStart="20dp"
         android:fontFamily="@font/ubuntu_regular"
         android:text="Top recommendations"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_below="@+id/recTxt"
         android:id="@+id/recycler_viewRec"
         android:layout_height="200dp"
@@ -36,7 +36,7 @@
         android:layout_marginStart="20dp"
         android:fontFamily="@font/ubuntu_regular"
         android:text="Recently Rated"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_below="@+id/recentlyRatedTxt"
         android:id="@+id/recycler_viewRat"
         android:layout_height="200dp"
