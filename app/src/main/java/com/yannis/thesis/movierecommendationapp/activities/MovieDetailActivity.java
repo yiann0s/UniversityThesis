@@ -1,8 +1,8 @@
 package com.yannis.thesis.movierecommendationapp.activities;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -16,7 +16,7 @@ import com.yannis.thesis.movierecommendationapp.R;
 
 import java.util.Date;
 
-import com.luseen.logger.Logger;
+import android.util.Log;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,10 +52,10 @@ public class MovieDetailActivity extends AppCompatActivity implements RatingBar.
 
         mRatingBar = findViewById(R.id.ratingBar1);
         if (!isMovieAlreadyRatedByCurrentUser()) {
-            Logger.d("It's not yet rated");
+            Log.d("MovieApp","It's not yet rated");
             mRatingBar.setOnRatingBarChangeListener(this);
         } else {
-            Logger.d("It's rated");
+            Log.d("MovieApp","It's rated");
             displayMovieRating();
         }
 
@@ -65,7 +65,7 @@ public class MovieDetailActivity extends AppCompatActivity implements RatingBar.
         if (getIntent().hasExtra("movie_title") && getIntent().hasExtra("movie_release_date")
                 && getIntent().hasExtra("movie_description") && getIntent().hasExtra("movie_id")
                 && getIntent().hasExtra("movie_poster_path") && getIntent().hasExtra("adapterName")) {
-            Logger.w("intent was called from " + getIntent().getStringExtra("adapterName") );
+            Log.d("MovieApp","intent was called from " + getIntent().getStringExtra("adapterName") );
             mTitle.setText(getIntent().getStringExtra("movie_title"));
             mReleaseDate.setText(getIntent().getStringExtra("movie_release_date"));
             mDescription.setText(getIntent().getStringExtra("movie_description"));
@@ -95,7 +95,7 @@ public class MovieDetailActivity extends AppCompatActivity implements RatingBar.
     private void rateMovie(String userid, String movieid, float rating,
                            String title, String release, String description,
                            String poster) {
-        Logger.w("rating a movie");
+        Log.d("MovieApp","rating a movie");
         Realm realm = Realm.getDefaultInstance();
         try {
             realm.beginTransaction();
@@ -134,7 +134,7 @@ public class MovieDetailActivity extends AppCompatActivity implements RatingBar.
                     .equalTo("userId", currentUserId)
                     .equalTo("movieId", movieID);
             UserRatesMovie userRatesMovie = query.findFirst();
-            Logger.w("User has rated this movie with a " + userRatesMovie.getRating());
+            Log.d("MovieApp","User has rated this movie with a " + userRatesMovie.getRating());
             mRatingBar.setRating(userRatesMovie.getRating());
         } finally {
             realm.close();

@@ -1,12 +1,16 @@
 package com.yannis.thesis.movierecommendationapp;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+
+import com.google.android.material.tabs.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +21,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.luseen.logger.LogType;
-import com.luseen.logger.Logger;
+import android.util.Log;
 import com.weiwangcn.betterspinner.library.BetterSpinner;
 import com.yannis.thesis.movierecommendationapp.activities.BaseActivity;
 import com.yannis.thesis.movierecommendationapp.activities.MainActivity;
@@ -115,12 +118,6 @@ public class MovieRecommendationApp extends Application {
                 .build();
         Realm.setDefaultConfiguration(config);
 
-        new Logger.Builder()
-                .isLoggable(BuildConfig.DEBUG)
-                .logType(LogType.WARN)
-                .tag("Iamerror")
-                .build();
-
         realm = Realm.getDefaultInstance();
 
 
@@ -156,7 +153,7 @@ public class MovieRecommendationApp extends Application {
                 .sort("predictedRating", Sort.DESCENDING);
         RealmResults<MovieRecommendedForUser> movieRecommendations = queryRecommendation.findAll();
         for (MovieRecommendedForUser movieRecommendedForUser : movieRecommendations) {
-            Logger.w("Recommended movie for user is " + movieRecommendedForUser.getMovie_title()
+            Log.d("MovieApp","Recommended movie for user is " + movieRecommendedForUser.getMovie_title()
                     + " rating " + movieRecommendedForUser.getPredictedRating());
         }
     }
@@ -166,7 +163,7 @@ public class MovieRecommendationApp extends Application {
                 .where(User.class);
         RealmResults<User> users = queryUsers.findAll();
         for (User u : users) {
-            Logger.w("User has mail " + u.getEmail() + " and id " + u.getId() + " and password " + u.getPassword());
+            Log.d("MovieApp","User has mail " + u.getEmail() + " and id " + u.getId() + " and password " + u.getPassword());
         }
     }
 
@@ -176,7 +173,7 @@ public class MovieRecommendationApp extends Application {
                 .where(User.class);
         RealmResults<User> users = queryUsers.findAll();
         for (User u : users) {
-            Logger.w("User " + u.getEmail());
+            Log.d("MovieApp","User " + u.getEmail());
             RealmQuery<UserRatesMovie> queryUserRatesMovie = realm
                     .where(UserRatesMovie.class);
 
@@ -184,7 +181,7 @@ public class MovieRecommendationApp extends Application {
                     .equalTo("userId",u.getId())
                     .findAll();
             for (UserRatesMovie urm : userRatesMovies) {
-                Logger.w("has rated" + urm.getMovie_title() + " with a " + urm.getRating());
+                Log.d("MovieApp","has rated" + urm.getMovie_title() + " with a " + urm.getRating());
             }
         }
     }
@@ -204,7 +201,6 @@ public class MovieRecommendationApp extends Application {
     //h synarthsh afth dexetai to userID tou xrhsth kai kanei populate ton pinaka
     // sth vash dedomenwn me tis tainies pou tha aresoun sto xrhsth
     public void MovieRecommendationAlgorithm() {
-//        Logger.w("im here");
         // bloper@gmail.com einai o active user mas
         // to id tou bloper@gmail.com  einai 75ed56fd-1f80-47ff-819b-fe35be3bc85e
         String activeUserID = "3c5303e9-0b5e-493a-98e8-184893dbb261";
@@ -214,7 +210,7 @@ public class MovieRecommendationApp extends Application {
 
         ArrayList<String> neightboursList = new ArrayList<>();
         for (User user : users) {
-            Logger.w("Similarioty of active user and user "+ user.getEmail() + " is " +similarity(activeUserID,user.getId()));
+            Log.d("MovieApp","Similarity of active user and user "+ user.getEmail() + " is " +similarity(activeUserID,user.getId()));
             if (similarity(activeUserID, user.getId()) >= SIMILARITY_PILLOW) {
                 neightboursList.add(user.getId());
             }
@@ -260,11 +256,11 @@ public class MovieRecommendationApp extends Application {
         final Double prediction = activeAVG + A / B;
         //an h provlepomenh vathmologia den einai panw apo to katwfli pou exoume orisei
         // ,de xreiazetai na apothikeftei sth vash dedomenwn
-        Logger.w("prediction of movie id " + notYetRatedMovieId + " is " + prediction);
+        Log.d("MovieApp","prediction of movie id " + notYetRatedMovieId + " is " + prediction);
         if (prediction < PREDICTION_PILLOW) {
             return;
         }
-//        Logger.w("prediction of movie id " + notYetRatedMovieId + " is " + prediction);
+//        Log.d("MovieApp","prediction of movie id " + notYetRatedMovieId + " is " + prediction);
         int movieId = Integer.parseInt(notYetRatedMovieId);
         client = retrofit.create(APIService.class);
         call = client.getMovieDetails(movieId, MovieRecommendationApp.getApiKey());
@@ -273,16 +269,16 @@ public class MovieRecommendationApp extends Application {
             public void onResponse(retrofit2.Call<Movie> call, retrofit2.Response<Movie> response) {
                 int statusCode = response.code();
                 if (!response.isSuccessful()) {
-                    Logger.w("unsuccessful w status"+String.valueOf(statusCode));
+                    Log.d("MovieApp","unsuccessful w status"+String.valueOf(statusCode));
                 } else if (response.isSuccessful()){
                     Movie m = response.body();
                     //an h tainia einai hdh stis proteinomenew gia to xrhsth
                     //thn diagrafoume apo thn database gia na thn antikatasthsoume me th neoterh timh ths
                     if (!movieIsUnique(notYetRatedMovieId,activeUserId)) {
-                        Logger.w("movie exists, so im gonna first delete");
+                        Log.d("MovieApp","movie exists, so im gonna first delete");
                         deleteMovie(notYetRatedMovieId, activeUserId);
                     }   //alliws dhmirgoume antikeeimeno tak ito eisagoume sth vash mas
-                    Logger.w("adding recommeneed movie");
+                    Log.d("MovieApp","adding recommeneed movie");
                     realm.beginTransaction();
                     final MovieRecommendedForUser movieRecommendedForUser =
                                 realm.createObject(MovieRecommendedForUser.class);
@@ -300,7 +296,7 @@ public class MovieRecommendationApp extends Application {
 
             @Override
             public void onFailure(retrofit2.Call<Movie> call, Throwable t) {
-                Logger.w("Failure at getMoviedetails callback:"+t.getMessage().toString());
+                Log.d("MovieApp","Failure at getMoviedetails callback:"+t.getMessage().toString());
             }
         });
     }
@@ -415,7 +411,7 @@ public class MovieRecommendationApp extends Application {
                     "3c5303e9-0b5e-493a-98e8-184893dbb261");
             user.setEmail("bloper@gmail.com");
             user.setPassword("123456");
-            Logger.w("bloper  id: " + user.getId());
+            Log.d("MovieApp","bloper  id: " + user.getId());
             realm.commitTransaction();
         } finally {
             realm.close();
@@ -427,7 +423,7 @@ public class MovieRecommendationApp extends Application {
                     "402ab71d-02af-4c93-9f43-7ed21cc3acd8");
             user.setEmail("bibou@hotmail.com");
             user.setPassword("234567");
-            Logger.w("bibou  id: " + user.getId());
+            Log.d("MovieApp","bibou  id: " + user.getId());
             realm.commitTransaction();
         } finally {
             realm.close();
@@ -439,7 +435,7 @@ public class MovieRecommendationApp extends Application {
                     "3f4d09f8-d499-43ab-a24f-86ccb3d546cb");
             user.setEmail("zaze@gmail.com");
             user.setPassword("345678");
-            Logger.w("zaze  id: " + user.getId());
+            Log.d("MovieApp","zaze  id: " + user.getId());
             realm.commitTransaction();
         } finally {
             realm.close();
@@ -451,7 +447,7 @@ public class MovieRecommendationApp extends Application {
                     "4343ad42-d303-42ca-a324-c5c0b520bd8f");
             user.setEmail("tinton@hotmail.gr");
             user.setPassword("456789");
-            Logger.w("tinton  id: " + user.getId());
+            Log.d("MovieApp","tinton  id: " + user.getId());
             realm.commitTransaction();
         } finally {
             realm.close();
@@ -463,7 +459,7 @@ public class MovieRecommendationApp extends Application {
                     "cbed9f61-b7f0-4a0d-ab4a-953e22c25473");
             user.setEmail("ezziz@yahoo.net");
             user.setPassword("567890");
-            Logger.w("ezziz  id: " + user.getId());
+            Log.d("MovieApp","ezziz  id: " + user.getId());
             realm.commitTransaction();
         } finally {
             realm.close();

@@ -2,7 +2,16 @@ package com.yannis.thesis.movierecommendationapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+
+import com.google.android.material.tabs.TabLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.luseen.logger.Logger;
+import android.util.Log;
 import com.squareup.picasso.Picasso;
 import com.yannis.thesis.movierecommendationapp.activities.MovieDetailActivity;
 import com.yannis.thesis.movierecommendationapp.models.Movie;
@@ -42,7 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent,
                                                            int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(rowLayout,parent,false);
-        Logger.w("Inside here");
+        Log.d("MovieApp","Inside here");
         return new MovieViewHolder(view);
     }
 
@@ -90,7 +99,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         holder.moviesLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Logger.d("CLICKED " + movie.getId().toString());
+                Log.d("MovieApp","CLICKED " + movie.getId().toString());
 
                 Intent intent = new Intent(mContext,MovieDetailActivity.class);
                 intent.putExtra("adapterName",MovieAdapter.class.getName());
@@ -99,11 +108,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 intent.putExtra("movie_release_date",movie.getReleaseDate());
                 intent.putExtra("movie_description",movie.getOverview());
                 intent.putExtra("movie_poster_path",movie.getPosterPath());
-                Logger.d("INTENT + "+ movie.getId().toString());
-                Logger.d("INTENT + " +movie.getTitle().toString());
-                Logger.d("INTENT + " +movie.getReleaseDate().toString());
-                Logger.d("INTENT + " +movie.getOverview().toString());
-                Logger.d("INTENT + " +movie.getPosterPath().toString());
+                Log.d("MovieApp","INTENT + "+ movie.getId().toString());
+                Log.d("MovieApp","INTENT + " +movie.getTitle().toString());
+                Log.d("MovieApp","INTENT + " +movie.getReleaseDate().toString());
+                Log.d("MovieApp","INTENT + " +movie.getOverview().toString());
+                Log.d("MovieApp","INTENT + " +movie.getPosterPath().toString());
 
                 mContext.startActivity(intent);
             }

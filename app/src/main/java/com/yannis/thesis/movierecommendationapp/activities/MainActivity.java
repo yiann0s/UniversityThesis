@@ -1,10 +1,10 @@
 package com.yannis.thesis.movierecommendationapp.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
 import com.yannis.thesis.movierecommendationapp.adapters.MainPagerAdapter;

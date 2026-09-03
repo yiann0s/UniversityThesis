@@ -2,7 +2,16 @@ package com.yannis.thesis.movierecommendationapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+
+import com.google.android.material.tabs.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.luseen.logger.Logger;
+import android.util.Log;
 import com.squareup.picasso.Picasso;
 import com.yannis.thesis.movierecommendationapp.activities.MovieDetailActivity;
 import com.yannis.thesis.movierecommendationapp.models.Movie;
@@ -90,17 +99,17 @@ public class UserRatesMovieAdapter extends RecyclerView.Adapter<UserRatesMovieAd
             public void onClick(View view) {
                 Intent intent = new Intent(mContext,MovieDetailActivity.class);
                 intent.putExtra("adapterName",UserRatesMovieAdapter.class.getName());
-                Logger.w("INTENT + "+ UserRatesMovieAdapter.class.getName());
+                Log.d("MovieApp","INTENT + "+ UserRatesMovieAdapter.class.getName());
                 intent.putExtra("movie_id",userRatesMovie.getMovieId().toString());
-                Logger.w("INTENT + "+ userRatesMovie.getMovieId().toString());
+                Log.d("MovieApp","INTENT + "+ userRatesMovie.getMovieId().toString());
                 intent.putExtra("movie_title",userRatesMovie.getMovie_title());
-                Logger.w("INTENT + " +userRatesMovie.getMovie_title().toString());
+                Log.d("MovieApp","INTENT + " +userRatesMovie.getMovie_title().toString());
                 intent.putExtra("movie_release_date",userRatesMovie.getMovie_release());
-                Logger.w("INTENT + " +userRatesMovie.getMovie_release().toString());
+                Log.d("MovieApp","INTENT + " +userRatesMovie.getMovie_release().toString());
                 intent.putExtra("movie_description",userRatesMovie.getMovie_description());
-                Logger.w("INTENT + " +userRatesMovie.getMovie_description().toString());
+                Log.d("MovieApp","INTENT + " +userRatesMovie.getMovie_description().toString());
                 intent.putExtra("movie_poster_path",userRatesMovie.getMovie_poster());
-                Logger.w("INTENT + " +userRatesMovie.getMovie_poster().toString());
+                Log.d("MovieApp","INTENT + " +userRatesMovie.getMovie_poster().toString());
 
                 mContext.startActivity(intent);
             }

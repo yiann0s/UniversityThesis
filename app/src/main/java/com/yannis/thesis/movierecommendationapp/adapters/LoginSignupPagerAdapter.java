@@ -2,8 +2,16 @@ package com.yannis.thesis.movierecommendationapp.adapters;
 
 
 import android.app.Dialog;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+
+import com.google.android.material.tabs.TabLayout;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -13,7 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-import com.luseen.logger.Logger;
+import android.util.Log;
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
 import com.yannis.thesis.movierecommendationapp.models.Activities;
 import com.yannis.thesis.movierecommendationapp.models.LoginSignupPagerEnum;
@@ -177,7 +185,7 @@ public class LoginSignupPagerAdapter extends PagerAdapter implements View.OnClic
             return;
         }
         MovieRecommendationApp.getInstance().setLoggedInUserId(passwordCheck.getId());
-        Logger.d("Current user id logged in is " +
+        Log.d("MovieApp","Current user id logged in is " +
                 MovieRecommendationApp.getInstance().getLoggedInUserId());
         Activities.Main.replace(MovieRecommendationApp.getInstance().lastActivity);
 

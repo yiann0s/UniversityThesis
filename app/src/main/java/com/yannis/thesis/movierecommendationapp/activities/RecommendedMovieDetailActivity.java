@@ -1,8 +1,8 @@
 package com.yannis.thesis.movierecommendationapp.activities;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -17,7 +17,7 @@ import com.yannis.thesis.movierecommendationapp.R;
 
 import java.util.Date;
 
-import com.luseen.logger.Logger;
+import android.util.Log;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +61,7 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
         if (getIntent().hasExtra("movie_title") && getIntent().hasExtra("movie_release_date")
                 && getIntent().hasExtra("movie_description") && getIntent().hasExtra("movie_id")
                 && getIntent().hasExtra("movie_poster_path") && getIntent().hasExtra("adapterName")) {
-            Logger.w("intent was called from " + getIntent().getStringExtra("adapterName"));
+            Log.d("MovieApp","intent was called from " + getIntent().getStringExtra("adapterName"));
             mTitle.setText(getIntent().getStringExtra("movie_title"));
             mReleaseDate.setText(getIntent().getStringExtra("movie_release_date"));
             mDescription.setText(getIntent().getStringExtra("movie_description"));
@@ -77,7 +77,7 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
     private void rateMovie(String userid, String movieid, float rating,
                            String title, String release, String description,
                            String poster) {
-        Logger.w("rating a movie");
+        Log.d("MovieApp","rating a movie");
         Realm realm = Realm.getDefaultInstance();
         try {
             realm.beginTransaction();
@@ -120,7 +120,7 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
                 .and()
                 .equalTo("movieId", movieId);
         final RealmResults<MovieRecommendedForUser> result = query.findAll();
-        Logger.w("delete recommened movie results before delete" + result.size());
+        Log.d("MovieApp","delete recommened movie results before delete" + result.size());
         // All changes to data must happen in a transaction
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -129,7 +129,7 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
                 result.deleteAllFromRealm();
             }
         });
-        Logger.w("delete recommened movie results after delete" + result.size());
+        Log.d("MovieApp","delete recommened movie results after delete" + result.size());
     }
 }
 

@@ -1,10 +1,10 @@
 package com.yannis.thesis.movierecommendationapp.activities;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.support.design.widget.TabLayout;
+import com.google.android.material.tabs.TabLayout;
 
 import com.yannis.thesis.movierecommendationapp.adapters.LoginSignupPagerAdapter;
 import com.yannis.thesis.movierecommendationapp.R;

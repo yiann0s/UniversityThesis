@@ -1,10 +1,15 @@
 package com.yannis.thesis.movierecommendationapp.adapters;
 
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+
+import com.google.android.material.tabs.TabLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +21,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.luseen.logger.Logger;
+import android.util.Log;
 import com.weiwangcn.betterspinner.library.BetterSpinner;
 import com.yannis.thesis.movierecommendationapp.activities.MainActivity;
 import com.yannis.thesis.movierecommendationapp.api.APIService;
@@ -228,21 +233,21 @@ public class MainPagerAdapter extends PagerAdapter {
                     public void onResponse(retrofit2.Call<DirectorResponse> dcall, retrofit2.Response<DirectorResponse> response) {
                         int statusCode = response.code();
                         if (response.isSuccessful() == false) {
-                            Logger.w("unsuccessful w status"+ String.valueOf(statusCode));
+                            Log.d("MovieApp","unsuccessful w status"+ String.valueOf(statusCode));
                         }
                         List<DirectorResult> directorResults = response.body().getResults();
                         //List<Movie> movies = directorResults.get(0).getKnownFor();
-                        Logger.w("ID of this director: " + directorResults.get(0).getId());
+                        Log.d("MovieApp","ID of this director: " + directorResults.get(0).getId());
                         call = client.getMovieByDirector(directorResults.get(0).getId(), MovieRecommendationApp.getApiKey());
                         call.enqueue(new retrofit2.Callback<MovieResponse>() {
                             @Override
                             public void onResponse(retrofit2.Call<MovieResponse> call, retrofit2.Response<MovieResponse> response) {
                                 int statusCode = response.code();
                                 if (response.isSuccessful() == false) {
-                                    Logger.w("unsuccessful w status"+ String.valueOf(statusCode));
+                                    Log.d("MovieApp","unsuccessful w status"+ String.valueOf(statusCode));
                                 }
                                 List<Movie> movies = response.body().getResults();
-                                Logger.w( "Number of movies received: " + movies.size());
+                                Log.d("MovieApp", "Number of movies received: " + movies.size());
                                 recyclerViewSearch.setAdapter(new MovieAdapter(movies, R.layout.movie_list_row, MovieRecommendationApp.getInstance()));
                             }
 
@@ -268,7 +273,7 @@ public class MainPagerAdapter extends PagerAdapter {
                     public void onResponse(retrofit2.Call<GenreResponse> gcall, retrofit2.Response<GenreResponse> response) {
                         int statusCode = response.code();
                         int genreId = -1;
-                        Log.w("AAA status", String.valueOf(statusCode));
+                        Log.d("MovieApp", "AAA status: " + String.valueOf(statusCode));
                         List<Genre> genres = response.body().getGenres();
                         // Log.d(TAG, "Number of genres received: " + genres.size());
                         for (Genre g : genres) {
