@@ -84,7 +84,7 @@ class MoviesRecommendedAdapter extends RecyclerView.Adapter<MoviesRecommendedAda
 //        holder.rating.setText(userRatesMovie.getRating().toString());
         // This is how we use Picasso to load images from the internet.
         Picasso.get()
-                .load("http://image.tmdb.org/t/p/w500" +movieRecommendedForUser.getMovie_poster())
+                .load("https://image.tmdb.org/t/p/w500" +movieRecommendedForUser.getMovie_poster())
                 .error(R.color.colorAccent)
                 .into(holder.imageView);
         holder.moviesLayout.setOnClickListener(new View.OnClickListener() {

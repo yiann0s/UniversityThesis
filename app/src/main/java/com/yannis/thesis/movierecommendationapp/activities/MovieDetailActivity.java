@@ -57,7 +57,7 @@ public class MovieDetailActivity extends AppCompatActivity implements RatingBar.
             movieID = getIntent().getStringExtra("movie_id");
             posterPathStr = getIntent().getStringExtra("movie_poster_path");
             Picasso.get()
-                    .load("http://image.tmdb.org/t/p/w500" + posterPathStr)
+                    .load("https://image.tmdb.org/t/p/w500" + posterPathStr)
                     .error(R.color.colorAccent)
                     .into(binding.moviePoster);
         }

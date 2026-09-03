@@ -86,7 +86,7 @@ public class UserRatesMovieAdapter extends RecyclerView.Adapter<UserRatesMovieAd
 //        holder.rating.setText(userRatesMovie.getRating().toString());
         // This is how we use Picasso to load images from the internet.
         Picasso.get()
-                .load("http://image.tmdb.org/t/p/w500" +userRatesMovie.getMovie_poster())
+                .load("https://image.tmdb.org/t/p/w500" +userRatesMovie.getMovie_poster())
                 .error(R.color.colorAccent)
                 .into(holder.imageView);
         holder.moviesLayout.setOnClickListener(new View.OnClickListener() {

@@ -85,7 +85,7 @@ public class MainPagerAdapter extends PagerAdapter {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    String API_BASE_URL = "http://api.themoviedb.org/3/";
+    String API_BASE_URL = "https://api.themoviedb.org/3/";
     private final static String API_KEY = "efbdebf1b30ffab728c49495748e9dfa";
 
     OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
