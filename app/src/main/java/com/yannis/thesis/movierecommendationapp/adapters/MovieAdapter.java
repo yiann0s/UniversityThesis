@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.util.Log;
 import com.squareup.picasso.Picasso;
 import com.yannis.thesis.movierecommendationapp.activities.MovieDetailActivity;
+import com.yannis.thesis.movierecommendationapp.databinding.MovieListRowBinding;
 import com.yannis.thesis.movierecommendationapp.models.Movie;
 import com.yannis.thesis.movierecommendationapp.R;
 
@@ -36,23 +37,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private Context mContext;
     private List<Movie> movies;
-    private int rowLayout;
-
-
-
-    public MovieAdapter(List<Movie> movies, int rowLayout, Context context) {
+    public MovieAdapter(List<Movie> movies, Context context) {
         this.movies = movies;
         this.mContext = context;
-        this.rowLayout = rowLayout;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
     public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent,
                                                            int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(rowLayout,parent,false);
+        MovieListRowBinding binding = MovieListRowBinding.inflate(
+                LayoutInflater.from(parent.getContext()), parent, false);
         Log.d("MovieApp","Inside here");
-        return new MovieViewHolder(view);
+        return new MovieViewHolder(binding);
     }
 
     // Provide a reference to the views for each data item
@@ -67,15 +64,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         TextView rating;
         ImageView imageView;
 
-        public MovieViewHolder(View v) {
-            super(v);
-            moviesLayout = (LinearLayout) v.findViewById(R.id.movies_layout);
-            imageView = (ImageView) itemView.findViewById(R.id.imageView);
-
-            movieTitle = (TextView)v.findViewById(R.id.title);
-            releaseDate = (TextView) v.findViewById(R.id.release);
-            movieDescription = (TextView)v.findViewById(R.id.description);
-//            rating = (TextView) v.findViewById(R.id.rating);
+        public MovieViewHolder(MovieListRowBinding binding) {
+            super(binding.getRoot());
+            moviesLayout = binding.moviesLayout;
+            imageView = binding.imageView;
+            movieTitle = binding.title;
+            releaseDate = binding.release;
+            movieDescription = binding.description;
         }
 
     }

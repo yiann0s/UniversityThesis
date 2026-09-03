@@ -1,35 +1,23 @@
 package com.yannis.thesis.movierecommendationapp.activities;
 
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
 import com.yannis.thesis.movierecommendationapp.adapters.MainPagerAdapter;
-import com.yannis.thesis.movierecommendationapp.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.yannis.thesis.movierecommendationapp.databinding.MainActivityBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.maintabs)
-    TabLayout tabLayout;
-
-    @BindView(R.id.main_viewpager)
-    ViewPager vp;
+    private MainActivityBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        binding = MainActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ButterKnife.bind(this);
-
-        vp.setAdapter(new MainPagerAdapter());
-        tabLayout.setupWithViewPager(vp);
+        binding.mainViewpager.setAdapter(new MainPagerAdapter());
+        binding.maintabs.setupWithViewPager(binding.mainViewpager);
     }
 
 }

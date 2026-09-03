@@ -1,17 +1,9 @@
 package com.yannis.thesis.movierecommendationapp.activities;
 
 import android.os.Bundle;
-import androidx.viewpager.widget.ViewPager;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import com.google.android.material.tabs.TabLayout;
 
 import com.yannis.thesis.movierecommendationapp.adapters.LoginSignupPagerAdapter;
-import com.yannis.thesis.movierecommendationapp.R;
-
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.yannis.thesis.movierecommendationapp.databinding.LoginSignupActivityBinding;
 
 /**
  * Created by yiannos on 13-Feb-18.
@@ -19,23 +11,17 @@ import butterknife.ButterKnife;
 
 public class LoginSignupActivity extends BaseActivity {
 
-    @BindView(R.id.loginsignup_viewpager)
-    ViewPager vp;
-
-    @BindView(R.id.tabs)
-    TabLayout tabLayout;
+    private LoginSignupActivityBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.login_signup_activity);
+        binding = LoginSignupActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ButterKnife.bind(this);
-
-        vp.setAdapter(new LoginSignupPagerAdapter());
-
-        tabLayout.setupWithViewPager(vp);
+        binding.loginsignupViewpager.setAdapter(new LoginSignupPagerAdapter());
+        binding.tabs.setupWithViewPager(binding.loginsignupViewpager);
     }
 
 }

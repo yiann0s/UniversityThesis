@@ -69,7 +69,7 @@
             android:textColor="@color/white"
             android:textSize="16.0sp" />
     </LinearLayout>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_below="@+id/search_top_layout"
         android:id="@+id/recycler_search"
         android:layout_height="match_parent"

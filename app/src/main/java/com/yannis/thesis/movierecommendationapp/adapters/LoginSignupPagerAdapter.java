@@ -1,39 +1,24 @@
 package com.yannis.thesis.movierecommendationapp.adapters;
 
 
-import android.app.Dialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-
-import com.google.android.material.tabs.TabLayout;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
-
-import android.util.Log;
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
 import com.yannis.thesis.movierecommendationapp.models.Activities;
 import com.yannis.thesis.movierecommendationapp.models.LoginSignupPagerEnum;
-import com.yannis.thesis.movierecommendationapp.R;
-import com.yannis.thesis.movierecommendationapp.models.Movie;
 import com.yannis.thesis.movierecommendationapp.models.User;
+import com.yannis.thesis.movierecommendationapp.databinding.ViewLoginBinding;
+import com.yannis.thesis.movierecommendationapp.databinding.ViewSignupBinding;
 
 import java.util.UUID;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -44,17 +29,13 @@ import io.realm.RealmResults;
  * Created by yiannos on 14-Nov-17.
  */
 
-public class LoginSignupPagerAdapter extends PagerAdapter implements View.OnClickListener {
+public class LoginSignupPagerAdapter extends PagerAdapter {
 
 
     EditText loginEmailTxt;
 
 
     EditText loginPasswordTxt;
-
-    Button btnRegister;
-
-    Button btnLogin;
 
     EditText signupPassword;
 
@@ -70,19 +51,17 @@ public class LoginSignupPagerAdapter extends PagerAdapter implements View.OnClic
         View view;
         LayoutInflater layoutinflater = LayoutInflater.from(container.getContext());
         if (position == 0) {
-            view = layoutinflater.inflate(R.layout.view_login, container, false);
-            loginEmailTxt = view.findViewById(R.id.logEmail);
-            loginPasswordTxt = view.findViewById(R.id.logPassword);
-
-            btnLogin = view.findViewById(R.id.login_button);
-            btnLogin.setOnClickListener(this);
+            ViewLoginBinding binding = ViewLoginBinding.inflate(layoutinflater, container, false);
+            view = binding.getRoot();
+            loginEmailTxt = binding.logEmail;
+            loginPasswordTxt = binding.logPassword;
+            binding.loginButton.setOnClickListener(v -> loginEvaluation());
         } else {
-            view = layoutinflater.inflate(R.layout.view_signup, container, false);
-            signupPassword = view.findViewById(R.id.signupPassword);
-            signupEmail = view.findViewById(R.id.signupEmail);
-
-            btnRegister = view.findViewById(R.id.register_button);
-            btnRegister.setOnClickListener(this);
+            ViewSignupBinding binding = ViewSignupBinding.inflate(layoutinflater, container, false);
+            view = binding.getRoot();
+            signupPassword = binding.signupPassword;
+            signupEmail = binding.signupEmail;
+            binding.registerButton.setOnClickListener(v -> signupEvaluation());
         }
         container.addView(view);
         return view;
@@ -191,16 +170,5 @@ public class LoginSignupPagerAdapter extends PagerAdapter implements View.OnClic
 
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.login_button:
-                loginEvaluation();
-                break;
-            case R.id.register_button:
-                signupEvaluation();
-                break;
-        }
-    }
 }
 

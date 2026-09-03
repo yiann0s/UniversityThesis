@@ -50,10 +50,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;

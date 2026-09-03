@@ -36,16 +36,14 @@ import com.yannis.thesis.movierecommendationapp.models.MovieRecommendedForUser;
 import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie;
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
 import com.yannis.thesis.movierecommendationapp.R;
+import com.yannis.thesis.movierecommendationapp.databinding.ViewMainTabBinding;
+import com.yannis.thesis.movierecommendationapp.databinding.ViewSearchTabBinding;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -92,8 +90,6 @@ public class MainPagerAdapter extends PagerAdapter {
 
     OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-    private Button btnSearch;
-
     Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(API_BASE_URL)
@@ -125,9 +121,10 @@ public class MainPagerAdapter extends PagerAdapter {
         if (position == 0) {
 
             //recommended movies
-            view = layoutinflater.inflate(R.layout.view_main_tab, container, false);
+            ViewMainTabBinding binding = ViewMainTabBinding.inflate(layoutinflater, container, false);
+            view = binding.getRoot();
 
-            recyclerViewRecommendedMovies = view.findViewById(R.id.recycler_viewRec);
+            recyclerViewRecommendedMovies = binding.recyclerViewRec;
             recyclerViewRecommendedMovies.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
             RealmQuery<MovieRecommendedForUser> queryRecommendation = realm
@@ -136,12 +133,11 @@ public class MainPagerAdapter extends PagerAdapter {
                     .sort("predictedRating", Sort.DESCENDING);
             RealmResults<MovieRecommendedForUser> movieRecommendations = queryRecommendation.findAll();
 
-            recyclerViewRecommendedMovies.setAdapter(new MoviesRecommendedAdapter(movieRecommendations,
-                    R.layout.movie_list_row,
-                    MovieRecommendationApp.getInstance()));
+            recyclerViewRecommendedMovies.setAdapter(new MoviesRecommendedAdapter(
+                    movieRecommendations, MovieRecommendationApp.getInstance()));
 
             // recently rated
-            recyclerViewRecentlyRatedMovies = view.findViewById(R.id.recycler_viewRat);
+            recyclerViewRecentlyRatedMovies = binding.recyclerViewRat;
             recyclerViewRecentlyRatedMovies.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
             RealmQuery<UserRatesMovie> queryRecentlyRated = realm.
@@ -149,22 +145,21 @@ public class MainPagerAdapter extends PagerAdapter {
                     .equalTo("userId",MovieRecommendationApp.getInstance().getLoggedInUserId())
                     .sort("dateAndTime", Sort.DESCENDING);
             RealmResults<UserRatesMovie> moviesRecentlyRated = queryRecentlyRated.findAll();
-            recyclerViewRecentlyRatedMovies.setAdapter(new UserRatesMovieAdapter(moviesRecentlyRated,
-                    R.layout.movie_list_row,
-                    MovieRecommendationApp.getInstance()));
+            recyclerViewRecentlyRatedMovies.setAdapter(new UserRatesMovieAdapter(
+                    moviesRecentlyRated, MovieRecommendationApp.getInstance()));
         } else {
-            view = layoutinflater.inflate(R.layout.view_search_tab, container, false);
-            recyclerViewSearch = view.findViewById(R.id.recycler_search);
+            ViewSearchTabBinding binding = ViewSearchTabBinding.inflate(layoutinflater, container, false);
+            view = binding.getRoot();
+            recyclerViewSearch = binding.recyclerSearch;
             recyclerViewSearch.setLayoutManager(new LinearLayoutManager(container.getContext()));
-            editText = view.findViewById(R.id.keyword_txt);
+            editText = binding.keywordTxt;
 
-            spinner = view.findViewById(R.id.catspinner);
+            spinner = binding.catspinner;
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(container.getContext(),
                     android.R.layout.simple_dropdown_item_1line, CATEGORIES);
             // Apply the adapter to the spinner
             spinner.setAdapter(adapter);
-            btnSearch = view.findViewById(R.id.searchBut);
-            btnSearch.setOnClickListener(new View.OnClickListener() {
+            binding.searchBut.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String Selection = spinner.getText().toString();
@@ -195,7 +190,7 @@ public class MainPagerAdapter extends PagerAdapter {
                         Log.w("AAA status", String.valueOf(statusCode));
                         List<Movie> movies = response.body().getResults();
                         Log.d(TAG, "Number of movies received: " + movies.size());
-                        recyclerViewSearch.setAdapter(new MovieAdapter(movies, R.layout.movie_list_row, MovieRecommendationApp.getInstance()));
+                        recyclerViewSearch.setAdapter(new MovieAdapter(movies, MovieRecommendationApp.getInstance()));
                     }
 
                     @Override
@@ -216,7 +211,7 @@ public class MainPagerAdapter extends PagerAdapter {
                         }
                         List<Movie> movies = response.body().getResults();
                         // Log.w(TAG, "Number of movies received: " + movies.size());
-                        recyclerViewSearch.setAdapter(new MovieAdapter(movies, R.layout.movie_list_row, MovieRecommendationApp.getInstance()));
+                        recyclerViewSearch.setAdapter(new MovieAdapter(movies, MovieRecommendationApp.getInstance()));
                     }
 
                     @Override
@@ -248,7 +243,7 @@ public class MainPagerAdapter extends PagerAdapter {
                                 }
                                 List<Movie> movies = response.body().getResults();
                                 Log.d("MovieApp", "Number of movies received: " + movies.size());
-                                recyclerViewSearch.setAdapter(new MovieAdapter(movies, R.layout.movie_list_row, MovieRecommendationApp.getInstance()));
+                                recyclerViewSearch.setAdapter(new MovieAdapter(movies, MovieRecommendationApp.getInstance()));
                             }
 
                             @Override
@@ -298,7 +293,7 @@ public class MainPagerAdapter extends PagerAdapter {
                                     }
                                     List<Movie> movies = response.body().getResults();
                                     //Log.w(TAG, "Number of movies received: " + movies.size());
-                                    recyclerViewSearch.setAdapter(new MovieAdapter(movies, R.layout.movie_list_row, MovieRecommendationApp.getInstance()));
+                                    recyclerViewSearch.setAdapter(new MovieAdapter(movies, MovieRecommendationApp.getInstance()));
                                 }
 
                                 @Override
@@ -339,7 +334,7 @@ public class MainPagerAdapter extends PagerAdapter {
                                 }
                                 List<Movie> movies = response.body().getResults();
                                 Log.w(TAG, "Number of movies received: " + movies.size());
-                                recyclerViewSearch.setAdapter(new MovieAdapter(movies, R.layout.movie_list_row, MovieRecommendationApp.getInstance()));
+                                recyclerViewSearch.setAdapter(new MovieAdapter(movies, MovieRecommendationApp.getInstance()));
                             }
 
                             @Override
@@ -379,14 +374,5 @@ public class MainPagerAdapter extends PagerAdapter {
         MainPagerEnum customPagerEnum = MainPagerEnum.values()[position];
         return MovieRecommendationApp.getInstance().getString(customPagerEnum.getTitleResId());
     }
-
-    @OnClick
-    public void filterMovies() {
-
-        Toast.makeText(MovieRecommendationApp.getInstance(),
-                "Selected: " + spinner.getListSelection(),
-                Toast.LENGTH_SHORT).show();
-    }
-
 
 }

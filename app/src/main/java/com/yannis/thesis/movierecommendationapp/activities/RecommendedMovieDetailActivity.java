@@ -3,39 +3,25 @@ package com.yannis.thesis.movierecommendationapp.activities;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.yannis.thesis.movierecommendationapp.models.MovieRecommendedForUser;
-import com.yannis.thesis.movierecommendationapp.models.User;
 import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie;
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
 import com.yannis.thesis.movierecommendationapp.R;
+import com.yannis.thesis.movierecommendationapp.databinding.RecommendedMovieDetailActivityBinding;
 
 import java.util.Date;
 
 import android.util.Log;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class RecommendedMovieDetailActivity extends AppCompatActivity implements RatingBar.OnRatingBarChangeListener {
-    @BindView(R.id.movie_title)
-    TextView mTitle;
-    @BindView(R.id.movie_release_date)
-    TextView mReleaseDate;
-    @BindView(R.id.movie_description)
-    TextView mDescription;
-    @BindView(R.id.movie_poster)
-    ImageView mPosterPath;
-
-    private RatingBar mRatingBar;
+    private RecommendedMovieDetailActivityBinding binding;
     private String movieID;
     private String posterPathStr;
     private float mRating;
@@ -46,14 +32,13 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.recommended_movie_detail_activity);
-        ButterKnife.bind(this);
+        binding = RecommendedMovieDetailActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         currentUserId = MovieRecommendationApp.getInstance().getLoggedInUserId();
         getIncomingIntent();
 
-        mRatingBar = findViewById(R.id.ratingBar1);
-        mRatingBar.setOnRatingBarChangeListener(this);
+        binding.ratingBar1.setOnRatingBarChangeListener(this);
 
     }
 
@@ -62,15 +47,15 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
                 && getIntent().hasExtra("movie_description") && getIntent().hasExtra("movie_id")
                 && getIntent().hasExtra("movie_poster_path") && getIntent().hasExtra("adapterName")) {
             Log.d("MovieApp","intent was called from " + getIntent().getStringExtra("adapterName"));
-            mTitle.setText(getIntent().getStringExtra("movie_title"));
-            mReleaseDate.setText(getIntent().getStringExtra("movie_release_date"));
-            mDescription.setText(getIntent().getStringExtra("movie_description"));
+            binding.movieTitle.setText(getIntent().getStringExtra("movie_title"));
+            binding.movieReleaseDate.setText(getIntent().getStringExtra("movie_release_date"));
+            binding.movieDescription.setText(getIntent().getStringExtra("movie_description"));
             movieID = getIntent().getStringExtra("movie_id");
             posterPathStr = getIntent().getStringExtra("movie_poster_path");
             Picasso.get()
                     .load("http://image.tmdb.org/t/p/w500" + posterPathStr)
                     .error(R.color.colorAccent)
-                    .into(mPosterPath);
+                    .into(binding.moviePoster);
         }
     }
 
@@ -103,14 +88,14 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
     //2. thn prosthesoume me th vathmologia pou evale o xrhsths ston pinaka UserRatesMovie
     @Override
     public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-        mRatingBar.setRating(Math.round(ratingBar.getRating()));
+        binding.ratingBar1.setRating(Math.round(ratingBar.getRating()));
         String activeUserId = MovieRecommendationApp.getInstance().getLoggedInUserId();
         deleteRecommendedMovie(movieID,activeUserId);
         rateMovie(activeUserId, movieID,
-                mRatingBar.getRating(), mTitle.getText().toString(),
-                mReleaseDate.getText().toString(),
-                mDescription.getText().toString(), posterPathStr);
-        mRatingBar.setIsIndicator(true);
+                binding.ratingBar1.getRating(), binding.movieTitle.getText().toString(),
+                binding.movieReleaseDate.getText().toString(),
+                binding.movieDescription.getText().toString(), posterPathStr);
+        binding.ratingBar1.setIsIndicator(true);
     }
 
 

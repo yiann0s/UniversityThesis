@@ -5,13 +5,10 @@ import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
-import com.yannis.thesis.movierecommendationapp.R;
+import com.yannis.thesis.movierecommendationapp.databinding.CustomMsgBinding;
 
 /**
  * Created by yiannos on 12-Feb-18.
@@ -64,6 +61,7 @@ public class BaseActivity extends AppCompatActivity {
         }
 
         public void showErrorDialog(String message) {
+            CustomMsgBinding binding = CustomMsgBinding.inflate(getLayoutInflater());
             errorDialog = new Dialog(this);
             errorDialog.getWindow().getCurrentFocus();
             errorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -71,24 +69,16 @@ public class BaseActivity extends AppCompatActivity {
             errorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             errorDialog.setCancelable(false);
             errorDialog.setOwnerActivity(this);
-            errorDialog.setContentView(R.layout.custom_msg);
+            errorDialog.setContentView(binding.getRoot());
 
-            // set the custom dialog components - text, image and button
-            TextView text = errorDialog.findViewById(R.id.text);
-            text.setText(message);
-            Button dialogButton = errorDialog.findViewById(R.id.dialogButtonOK);
-            // if button is clicked, close the custom dialog
-            dialogButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    errorDialog.dismiss();
-                }
-            });
+            binding.text.setText(message);
+            binding.dialogButtonOK.setOnClickListener(v -> errorDialog.dismiss());
 
             errorDialog.show();
         }
 
         public void hideErrorDialog() {
+            CustomMsgBinding binding = CustomMsgBinding.inflate(getLayoutInflater());
             errorDialog = new Dialog(this);
             errorDialog.getWindow().getCurrentFocus();
             errorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -96,7 +86,7 @@ public class BaseActivity extends AppCompatActivity {
             errorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             errorDialog.setCancelable(false);
             errorDialog.setOwnerActivity(this);
-            errorDialog.setContentView(R.layout.custom_msg);
+            errorDialog.setContentView(binding.getRoot());
             if (errorDialog != null && errorDialog.isShowing()) {
                 errorDialog.dismiss();
             }
