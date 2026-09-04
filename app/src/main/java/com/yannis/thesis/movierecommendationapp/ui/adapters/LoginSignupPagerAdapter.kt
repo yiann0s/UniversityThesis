@@ -1,6 +1,5 @@
 package com.yannis.thesis.movierecommendationapp.ui.adapters
 
-import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +9,14 @@ import androidx.viewpager.widget.PagerAdapter
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp
 import com.yannis.thesis.movierecommendationapp.databinding.ViewLoginBinding
 import com.yannis.thesis.movierecommendationapp.databinding.ViewSignupBinding
-import com.yannis.thesis.movierecommendationapp.domain.model.Activities
 import com.yannis.thesis.movierecommendationapp.domain.model.LoginSignupPagerEnum
 import com.yannis.thesis.movierecommendationapp.data.local.User
 import java.util.UUID
 
-class LoginSignupPagerAdapter : PagerAdapter() {
+class LoginSignupPagerAdapter(
+    private val onLoginSuccess: () -> Unit,
+    private val onError: (String) -> Unit
+) : PagerAdapter() {
     private lateinit var loginEmailTxt: EditText
     private lateinit var loginPasswordTxt: EditText
     private lateinit var signupPassword: EditText
@@ -80,7 +81,7 @@ class LoginSignupPagerAdapter : PagerAdapter() {
     }
 
     private fun showError(message: String) {
-        MovieRecommendationApp.getInstance().lastActivity?.showErrorDialog(message)
+        onError(message)
     }
 
     private fun isEmailUnique(email: String): Boolean = userRepository.findByEmail(email) == null
@@ -125,7 +126,6 @@ class LoginSignupPagerAdapter : PagerAdapter() {
             return
         }
         MovieRecommendationApp.getInstance().loggedInUserId = passwordCheck.id
-        Log.d("MovieApp", "Current user id logged in is ${passwordCheck.id}")
-        MovieRecommendationApp.getInstance().lastActivity?.let { Activities.Main.replace(it) }
+        onLoginSuccess()
     }
 }

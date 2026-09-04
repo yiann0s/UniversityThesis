@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/watermelon"
-    tools:context="com.yannis.thesis.movierecommendationapp.ui.activities.MainActivity">
+    tools:context="com.yannis.thesis.movierecommendationapp.ui.fragments.MainFragment">
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/toptabs"
             android:layout_width="match_parent"

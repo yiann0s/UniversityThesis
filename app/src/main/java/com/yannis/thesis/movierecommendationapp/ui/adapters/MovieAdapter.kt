@@ -1,21 +1,17 @@
 package com.yannis.thesis.movierecommendationapp.ui.adapters
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.yannis.thesis.movierecommendationapp.R
-import com.yannis.thesis.movierecommendationapp.ui.activities.MovieDetailActivity
 import com.yannis.thesis.movierecommendationapp.databinding.MovieListRowBinding
 import com.yannis.thesis.movierecommendationapp.data.remote.Movie
 
 class MovieAdapter(
     private val movies: List<Movie>,
-    private val context: Context
+    private val onMovieClick: (Movie) -> Unit
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     class MovieViewHolder(binding: MovieListRowBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -38,16 +34,7 @@ class MovieAdapter(
             .error(R.color.colorAccent).into(holder.imageView)
         holder.moviesLayout.setOnClickListener {
             Log.d("MovieApp", "CLICKED ${movie.id}")
-            val intent = Intent(context, MovieDetailActivity::class.java).apply {
-                putExtra("adapterName", MovieAdapter::class.java.name)
-                putExtra("movie_id", movie.id?.toString())
-                putExtra("movie_title", movie.title)
-                putExtra("movie_release_date", movie.releaseDate)
-                putExtra("movie_description", movie.overview)
-                putExtra("movie_poster_path", movie.posterPath)
-                if (context !is Activity) addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            context.startActivity(intent)
+            onMovieClick(movie)
         }
     }
 

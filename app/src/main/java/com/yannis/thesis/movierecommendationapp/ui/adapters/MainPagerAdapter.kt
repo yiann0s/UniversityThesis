@@ -17,6 +17,9 @@ import com.yannis.thesis.movierecommendationapp.data.remote.DirectorResponse
 import com.yannis.thesis.movierecommendationapp.data.remote.GenreResponse
 import com.yannis.thesis.movierecommendationapp.domain.model.MainPagerEnum
 import com.yannis.thesis.movierecommendationapp.data.remote.MovieResponse
+import com.yannis.thesis.movierecommendationapp.data.remote.Movie
+import com.yannis.thesis.movierecommendationapp.data.local.MovieRecommendedForUser
+import com.yannis.thesis.movierecommendationapp.data.local.UserRatesMovie
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,7 +27,11 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainPagerAdapter : PagerAdapter() {
+class MainPagerAdapter(
+    private val onMovieClick: (Movie) -> Unit,
+    private val onRatedMovieClick: (UserRatesMovie) -> Unit,
+    private val onRecommendedMovieClick: (MovieRecommendedForUser) -> Unit
+) : PagerAdapter() {
     private val app
         get() = MovieRecommendationApp.getInstance()
     private lateinit var searchRecyclerView: RecyclerView
@@ -51,12 +58,12 @@ class MainPagerAdapter : PagerAdapter() {
             val recommendations = app.recommendationRepository
                 .findAllForUserByRating(app.loggedInUserId)
             binding.recyclerViewRec.adapter =
-                MoviesRecommendedAdapter(recommendations, app)
+                MoviesRecommendedAdapter(recommendations, onRecommendedMovieClick)
 
             binding.recyclerViewRat.layoutManager = LinearLayoutManager(container.context)
             val recentlyRated = app.ratingRepository.findAllForUser(app.loggedInUserId)
             binding.recyclerViewRat.adapter =
-                UserRatesMovieAdapter(recentlyRated, app)
+                UserRatesMovieAdapter(recentlyRated, onRatedMovieClick)
         } else {
             val binding = ViewSearchTabBinding.inflate(inflater, container, false)
             view = binding.root
@@ -93,7 +100,7 @@ class MainPagerAdapter : PagerAdapter() {
     }
 
     private fun showMovies(response: Response<MovieResponse>) {
-        searchRecyclerView.adapter = MovieAdapter(response.body()?.results.orEmpty(), MovieRecommendationApp.getInstance())
+        searchRecyclerView.adapter = MovieAdapter(response.body()?.results.orEmpty(), onMovieClick)
     }
 
     private fun searchForSelectedCategory(category: String) {

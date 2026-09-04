@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="com.yannis.thesis.movierecommendationapp.ui.activities.LoginSignupActivity">
+    tools:context="com.yannis.thesis.movierecommendationapp.ui.fragments.LoginSignupFragment">
 
     <RelativeLayout
         android:id="@+id/topmost_layout"
