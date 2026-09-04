@@ -3,7 +3,7 @@
 buildscript {
 
     ext {
-        kotlin_version = '2.3.10'
+        kotlin_version = '1.9.22'
     }
     repositories {
         google()
@@ -13,7 +13,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:8.2.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 

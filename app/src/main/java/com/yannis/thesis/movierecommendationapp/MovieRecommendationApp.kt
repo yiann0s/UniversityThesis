@@ -55,9 +55,9 @@ class MovieRecommendationApp : Application() {
             .filter { similarity(activeUserId, it.id) >= similarityPillow }
             .map { it.id }
         val rated = database.userRatesMovieDao().findAllForUser(activeUserId).associate {
-            it.movieId to it.rating.toDouble()
+            it.movieId to (it.rating ?: 0).toDouble()
         }
-        val notRated = database.userRatesMovieDao().getAll().map { it.movieId }
+        val notRated = database.userRatesMovieDao().getAll().mapNotNull { it.movieId }
             .filter { it !in rated }.distinct()
         notRated.forEach { prediction(activeUserId, it, ArrayList(neighbours)) }
     }
@@ -102,14 +102,14 @@ class MovieRecommendationApp : Application() {
     }
 
     fun getUser_i_MovieRating(userId: String?, movieId: String?) =
-        database.userRatesMovieDao().findForMovie(userId, movieId)!!.rating.toDouble()
+        database.userRatesMovieDao().findForMovie(userId, movieId)!!.rating!!.toDouble()
 
     fun similarity(activeUserId: String?, otherUserId: String?): Double {
         val active = database.userRatesMovieDao().findAllForUser(activeUserId).associate {
-            it.movieId to it.rating.toDouble()
+            it.movieId to (it.rating ?: 0).toDouble()
         }
         val other = database.userRatesMovieDao().findAllForUser(otherUserId).associate {
-            it.movieId to it.rating.toDouble()
+            it.movieId to (it.rating ?: 0).toDouble()
         }
         val common = active.keys.intersect(other.keys)
         if (common.isEmpty()) return 0.0
@@ -122,7 +122,7 @@ class MovieRecommendationApp : Application() {
     }
 
     fun avgRating(userId: String?): Double {
-        val ratings = database.userRatesMovieDao().findAllForUser(userId).map { it.rating.toDouble() }
+        val ratings = database.userRatesMovieDao().findAllForUser(userId).map { (it.rating ?: 0).toDouble() }
         return if (ratings.isEmpty()) 0.0 else ratings.average()
     }
 

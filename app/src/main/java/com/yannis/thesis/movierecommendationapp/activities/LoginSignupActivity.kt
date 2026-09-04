@@ -1,27 +1,17 @@
-package com.yannis.thesis.movierecommendationapp.activities;
+package com.yannis.thesis.movierecommendationapp.activities
 
-import android.os.Bundle;
+import android.os.Bundle
+import com.yannis.thesis.movierecommendationapp.adapters.LoginSignupPagerAdapter
+import com.yannis.thesis.movierecommendationapp.databinding.LoginSignupActivityBinding
 
-import com.yannis.thesis.movierecommendationapp.adapters.LoginSignupPagerAdapter;
-import com.yannis.thesis.movierecommendationapp.databinding.LoginSignupActivityBinding;
+class LoginSignupActivity : BaseActivity() {
+    private lateinit var binding: LoginSignupActivityBinding
 
-/**
- * Created by yiannos on 13-Feb-18.
- */
-
-public class LoginSignupActivity extends BaseActivity {
-
-    private LoginSignupActivityBinding binding;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        binding = LoginSignupActivityBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        binding.loginsignupViewpager.setAdapter(new LoginSignupPagerAdapter());
-        binding.tabs.setupWithViewPager(binding.loginsignupViewpager);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = LoginSignupActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.loginsignupViewpager.adapter = LoginSignupPagerAdapter()
+        binding.tabs.setupWithViewPager(binding.loginsignupViewpager)
     }
-
 }

@@ -1,94 +1,63 @@
-package com.yannis.thesis.movierecommendationapp.activities;
+package com.yannis.thesis.movierecommendationapp.activities
 
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.KeyEvent;
-import android.view.Window;
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.Window
+import androidx.appcompat.app.AppCompatActivity
+import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp
+import com.yannis.thesis.movierecommendationapp.databinding.CustomMsgBinding
 
-import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
-import com.yannis.thesis.movierecommendationapp.databinding.CustomMsgBinding;
+open class BaseActivity : AppCompatActivity() {
+    private var loadingDialog: Dialog? = null
+    private var errorDialog: Dialog? = null
+    var isActive = false
+    var isBackground = false
 
-/**
- * Created by yiannos on 12-Feb-18.
- */
+    fun getApp(): MovieRecommendationApp = MovieRecommendationApp.getInstance()
 
-public class BaseActivity extends AppCompatActivity {
-
-        private Dialog loadingDialog;
-        boolean isActive = false;
-        boolean isBackground = false;
-        private Dialog errorDialog;
-
-        public MovieRecommendationApp getApp() {
-            return MovieRecommendationApp.getInstance();
-        }
-
-
-        @Override
-        protected void onResume() {
-            super.onResume();
-            getApp().lastActivity = this;
-            isBackground = false;
-        }
-
-        @Override
-        protected void onPause() {
-            super.onPause();
-            isBackground = true;
-        }
-
-        @Override
-        protected void onDestroy() {
-            if (loadingDialog != null) {
-                loadingDialog.dismiss();
-            }
-
-            isActive = false;
-            super.onDestroy();
-        }
-
-        @Override
-        public void onBackPressed() {
-            super.onBackPressed();
-        }
-
-        @Override
-        public void finish() {
-            isActive = false;
-            super.finish();
-        }
-
-        public void showErrorDialog(String message) {
-            CustomMsgBinding binding = CustomMsgBinding.inflate(getLayoutInflater());
-            errorDialog = new Dialog(this);
-            errorDialog.getWindow().getCurrentFocus();
-            errorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-            errorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            errorDialog.setCancelable(false);
-            errorDialog.setOwnerActivity(this);
-            errorDialog.setContentView(binding.getRoot());
-
-            binding.text.setText(message);
-            binding.dialogButtonOK.setOnClickListener(v -> errorDialog.dismiss());
-
-            errorDialog.show();
-        }
-
-        public void hideErrorDialog() {
-            CustomMsgBinding binding = CustomMsgBinding.inflate(getLayoutInflater());
-            errorDialog = new Dialog(this);
-            errorDialog.getWindow().getCurrentFocus();
-            errorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-            errorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            errorDialog.setCancelable(false);
-            errorDialog.setOwnerActivity(this);
-            errorDialog.setContentView(binding.getRoot());
-            if (errorDialog != null && errorDialog.isShowing()) {
-                errorDialog.dismiss();
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+        getApp().lastActivity = this
+        isBackground = false
     }
+
+    override fun onPause() {
+        super.onPause()
+        isBackground = true
+    }
+
+    override fun onDestroy() {
+        loadingDialog?.dismiss()
+        isActive = false
+        super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
+
+    override fun finish() {
+        isActive = false
+        super.finish()
+    }
+
+    fun showErrorDialog(message: String) {
+        val binding = CustomMsgBinding.inflate(layoutInflater)
+        errorDialog = Dialog(this).apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setCancelable(false)
+            setOwnerActivity(this@BaseActivity)
+            setContentView(binding.root)
+        }
+        binding.text.text = message
+        binding.dialogButtonOK.setOnClickListener { errorDialog?.dismiss() }
+        errorDialog?.show()
+    }
+
+    fun hideErrorDialog() {
+        errorDialog?.dismiss()
+    }
+}

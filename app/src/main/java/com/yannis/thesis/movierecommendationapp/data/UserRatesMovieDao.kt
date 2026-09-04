@@ -1,19 +1,21 @@
-package com.yannis.thesis.movierecommendationapp.data;
+package com.yannis.thesis.movierecommendationapp.data
 
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.Query;
-import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie;
-import java.util.List;
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie
 
 @Dao
-public interface UserRatesMovieDao {
+interface UserRatesMovieDao {
     @Query("SELECT * FROM UserRatesMovie WHERE userId = :userId AND movieId = :movieId LIMIT 1")
-    UserRatesMovie findForMovie(String userId, String movieId);
+    fun findForMovie(userId: String?, movieId: String?): UserRatesMovie?
+
     @Query("SELECT * FROM UserRatesMovie WHERE userId = :userId ORDER BY dateAndTime DESC")
-    List<UserRatesMovie> findAllForUser(String userId);
+    fun findAllForUser(userId: String?): List<UserRatesMovie>
+
     @Query("SELECT * FROM UserRatesMovie")
-    List<UserRatesMovie> getAll();
+    fun getAll(): List<UserRatesMovie>
+
     @Insert
-    void insert(UserRatesMovie movie);
+    fun insert(movie: UserRatesMovie)
 }

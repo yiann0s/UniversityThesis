@@ -1,21 +1,24 @@
-package com.yannis.thesis.movierecommendationapp.data;
+package com.yannis.thesis.movierecommendationapp.data
 
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.Query;
-import com.yannis.thesis.movierecommendationapp.models.User;
-import java.util.List;
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import com.yannis.thesis.movierecommendationapp.models.User
 
 @Dao
-public interface UserDao {
+interface UserDao {
     @Query("SELECT * FROM User")
-    List<User> getAll();
+    fun getAll(): List<User>
+
     @Query("SELECT * FROM User WHERE email = :email LIMIT 1")
-    User findByEmail(String email);
+    fun findByEmail(email: String): User?
+
     @Query("SELECT * FROM User WHERE password = :password LIMIT 1")
-    User findByPassword(String password);
+    fun findByPassword(password: String): User?
+
     @Query("SELECT * FROM User WHERE id != :id")
-    List<User> findAllExcept(String id);
+    fun findAllExcept(id: String): List<User>
+
     @Insert
-    void insert(User user);
+    fun insert(user: User)
 }

@@ -1,160 +1,132 @@
-package com.yannis.thesis.movierecommendationapp.adapters;
+package com.yannis.thesis.movierecommendationapp.adapters
 
+import android.util.Log
+import android.util.Patterns
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
+import androidx.viewpager.widget.PagerAdapter
+import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp
+import com.yannis.thesis.movierecommendationapp.data.AppDatabase
+import com.yannis.thesis.movierecommendationapp.databinding.ViewLoginBinding
+import com.yannis.thesis.movierecommendationapp.databinding.ViewSignupBinding
+import com.yannis.thesis.movierecommendationapp.models.Activities
+import com.yannis.thesis.movierecommendationapp.models.LoginSignupPagerEnum
+import com.yannis.thesis.movierecommendationapp.models.User
+import java.util.UUID
 
-import androidx.annotation.NonNull;
-import androidx.viewpager.widget.PagerAdapter;
-import android.util.Log;
-import android.util.Patterns;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
+class LoginSignupPagerAdapter : PagerAdapter() {
+    private lateinit var loginEmailTxt: EditText
+    private lateinit var loginPasswordTxt: EditText
+    private lateinit var signupPassword: EditText
+    private lateinit var signupEmail: EditText
+    private lateinit var database: AppDatabase
 
-import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
-import com.yannis.thesis.movierecommendationapp.data.AppDatabase;
-import com.yannis.thesis.movierecommendationapp.models.Activities;
-import com.yannis.thesis.movierecommendationapp.models.LoginSignupPagerEnum;
-import com.yannis.thesis.movierecommendationapp.models.User;
-import com.yannis.thesis.movierecommendationapp.databinding.ViewLoginBinding;
-import com.yannis.thesis.movierecommendationapp.databinding.ViewSignupBinding;
-
-import java.util.UUID;
-
-
-/**
- * Created by yiannos on 14-Nov-17.
- */
-
-public class LoginSignupPagerAdapter extends PagerAdapter {
-
-
-    EditText loginEmailTxt;
-
-
-    EditText loginPasswordTxt;
-
-    EditText signupPassword;
-
-    EditText signupEmail;
-
-    AppDatabase database;
-
-    @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
-
-        database = AppDatabase.getInstance(container.getContext());
-
-        View view;
-        LayoutInflater layoutinflater = LayoutInflater.from(container.getContext());
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        database = AppDatabase.getInstance(container.context)
+        val inflater = LayoutInflater.from(container.context)
+        val view: View
         if (position == 0) {
-            ViewLoginBinding binding = ViewLoginBinding.inflate(layoutinflater, container, false);
-            view = binding.getRoot();
-            loginEmailTxt = binding.logEmail;
-            loginPasswordTxt = binding.logPassword;
-            binding.loginButton.setOnClickListener(v -> loginEvaluation());
+            val binding = ViewLoginBinding.inflate(inflater, container, false)
+            view = binding.root
+            loginEmailTxt = binding.logEmail
+            loginPasswordTxt = binding.logPassword
+            binding.loginButton.setOnClickListener { loginEvaluation() }
         } else {
-            ViewSignupBinding binding = ViewSignupBinding.inflate(layoutinflater, container, false);
-            view = binding.getRoot();
-            signupPassword = binding.signupPassword;
-            signupEmail = binding.signupEmail;
-            binding.registerButton.setOnClickListener(v -> signupEvaluation());
+            val binding = ViewSignupBinding.inflate(inflater, container, false)
+            view = binding.root
+            signupPassword = binding.signupPassword
+            signupEmail = binding.signupEmail
+            binding.registerButton.setOnClickListener { signupEvaluation() }
         }
-        container.addView(view);
-        return view;
+        container.addView(view)
+        return view
     }
 
-
-    @Override
-    public void destroyItem(ViewGroup collection, int position, Object view) {
-        collection.removeView((View) view);
+    override fun destroyItem(container: ViewGroup, position: Int, view: Any) {
+        container.removeView(view as View)
     }
 
-    @Override
-    public int getCount() {
-        return LoginSignupPagerEnum.values().length;
+    override fun getCount(): Int = LoginSignupPagerEnum.values().size
+
+    override fun isViewFromObject(view: View, objectValue: Any): Boolean = view === objectValue
+
+    override fun getPageTitle(position: Int): CharSequence {
+        val page = LoginSignupPagerEnum.values()[position]
+        return MovieRecommendationApp.getInstance().getString(page.titleResId)
     }
 
-    @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == object;
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        LoginSignupPagerEnum customPagerEnum = LoginSignupPagerEnum.values()[position];
-        return MovieRecommendationApp.getInstance().getString(customPagerEnum.getTitleResId());
-    }
-
-    public void signupEvaluation() {
-        if (signupEmail.getText().toString().isEmpty()) {
-            MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("Must provide an email address");
-            return;
+    fun signupEvaluation() {
+        val email = signupEmail.text.toString()
+        if (email.isEmpty()) {
+            showError("Must provide an email address")
+            return
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(signupEmail.getText().toString()).matches()) {
-            MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("Must provide a valid email");
-            return;
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            showError("Must provide a valid email")
+            return
         }
-        if (signupPassword.getText().toString().isEmpty()) {
-            MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("Mus provide a password");
-            return;
+        if (signupPassword.text.toString().isEmpty()) {
+            showError("Mus provide a password")
+            return
         }
-        if (!isEmailUnique(signupEmail.getText().toString())) {
-            MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("This email is already in use");
-            return;
+        if (!isEmailUnique(email)) {
+            showError("This email is already in use")
+            return
         }
-        registerUser();
-        MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("Registration complete");
-        emptyFields();
+        registerUser()
+        showError("Registration complete")
+        emptyFields()
     }
 
-    private boolean isEmailUnique(String s) {
-        return database.userDao().findByEmail(s) == null;
-
+    private fun showError(message: String) {
+        MovieRecommendationApp.getInstance().lastActivity?.showErrorDialog(message)
     }
 
-    public void registerUser() {
-        final User user = new User(UUID.randomUUID().toString(), null,
-                signupEmail.getText().toString(), signupPassword.getText().toString());
-        database.userDao().insert(user);
+    private fun isEmailUnique(email: String): Boolean = database.userDao().findByEmail(email) == null
+
+    fun registerUser() {
+        database.userDao().insert(
+            User(UUID.randomUUID().toString(), null, signupEmail.text.toString(), signupPassword.text.toString())
+        )
     }
 
-    public void emptyFields() {
-        signupEmail.setText("");
-        signupPassword.setText("");
+    fun emptyFields() {
+        signupEmail.setText("")
+        signupPassword.setText("")
     }
 
-    public void loginEvaluation() {
-        if (loginEmailTxt.getText().toString().isEmpty()) {
-            MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("Email is required");
-            return;
+    fun loginEvaluation() {
+        val email = loginEmailTxt.text.toString()
+        if (email.isEmpty()) {
+            showError("Email is required")
+            return
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(loginEmailTxt.getText().toString().trim()).matches()) {
-            MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("Must provide valid email");
-            return;
+        if (!Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()) {
+            showError("Must provide valid email")
+            return
         }
-        if (loginPasswordTxt.getText().toString().isEmpty()) {
-            MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("Password is required");
-            return;
+        if (loginPasswordTxt.text.toString().isEmpty()) {
+            showError("Password is required")
+            return
         }
-        validateUser(loginEmailTxt.getText().toString().trim(), loginPasswordTxt.getText().toString());
+        validateUser(email.trim(), loginPasswordTxt.text.toString())
     }
 
-    private void validateUser(String email, String password) {
-        User userCheck = database.userDao().findByEmail(email);
-        User passwordCheck = database.userDao().findByPassword(password);
+    private fun validateUser(email: String, password: String) {
+        val userCheck = database.userDao().findByEmail(email)
+        val passwordCheck = database.userDao().findByPassword(password)
         if (userCheck == null) {
-            MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("No such username exists");
-            return;
+            showError("No such username exists")
+            return
         }
         if (passwordCheck == null) {
-            MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("Wrong password :S");
-            return;
+            showError("Wrong password :S")
+            return
         }
-        MovieRecommendationApp.getInstance().loggedInUserId = passwordCheck.getId();
-        Log.d("MovieApp","Current user id logged in is " +
-                MovieRecommendationApp.getInstance().loggedInUserId);
-        Activities.Main.replace(MovieRecommendationApp.getInstance().lastActivity);
-
+        MovieRecommendationApp.getInstance().loggedInUserId = passwordCheck.id
+        Log.d("MovieApp", "Current user id logged in is ${passwordCheck.id}")
+        MovieRecommendationApp.getInstance().lastActivity?.let { Activities.Main.replace(it) }
     }
-
 }

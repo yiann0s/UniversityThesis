@@ -1,20 +1,8 @@
-package com.yannis.thesis.movierecommendationapp.models;
+package com.yannis.thesis.movierecommendationapp.models
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-import java.util.List;
-
-public class GenreResponse {
-    @SerializedName("genres")
-    @Expose
-    private List<Genre> genres = null;
-
-    public List<Genre> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
-    }
-}
+class GenreResponse(
+    @SerializedName("genres") @Expose var genres: List<Genre>? = null
+)

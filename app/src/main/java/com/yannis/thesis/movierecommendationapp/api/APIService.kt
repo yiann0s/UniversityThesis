@@ -1,59 +1,49 @@
-package com.yannis.thesis.movierecommendationapp.api;
+package com.yannis.thesis.movierecommendationapp.api
 
-import com.yannis.thesis.movierecommendationapp.models.DirectorResponse;
-import com.yannis.thesis.movierecommendationapp.models.GenreResponse;
-import com.yannis.thesis.movierecommendationapp.models.Movie;
-import com.yannis.thesis.movierecommendationapp.models.MovieResponse;
-import com.yannis.thesis.movierecommendationapp.models.PrimaryMovieInfo;
+import com.yannis.thesis.movierecommendationapp.models.DirectorResponse
+import com.yannis.thesis.movierecommendationapp.models.GenreResponse
+import com.yannis.thesis.movierecommendationapp.models.Movie
+import com.yannis.thesis.movierecommendationapp.models.MovieResponse
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-
-/**
- * Created by yiannos on 20-Feb-18.
- */
-
-public interface APIService {
-
+interface APIService {
     @POST("/list")
-    Call<Movie> loadMovie();
+    fun loadMovie(): Call<Movie>
 
     @GET("movie/top_rated")
-    Call<MovieResponse> getTopRatedMovies(@Query("api_key") String apiKey);
+    fun getTopRatedMovies(@Query("api_key") apiKey: String): Call<MovieResponse>
 
     @GET("movie/popular")
-    Call<MovieResponse> getPopularMovies(@Query("api_key") String apiKey);
+    fun getPopularMovies(@Query("api_key") apiKey: String): Call<MovieResponse>
 
     @GET("movie/{id}")
-    Call<Movie> getMovieDetails(@Path("id")Integer id, @Query("api_key") String apiKey);
+    fun getMovieDetails(@Path("id") id: Int, @Query("api_key") apiKey: String): Call<Movie?>
 
     @GET("search/movie")
-    Call<MovieResponse> getMovieByTitle(@Query("query") String title, @Query("api_key") String apiKey);
+    fun getMovieByTitle(@Query("query") title: String, @Query("api_key") apiKey: String): Call<MovieResponse>
 
     @GET("discover/movie")
-    Call<MovieResponse> getMovieByReleasedYear(@Query("primary_release_year") String year, @Query("api_key") String apiKey);
+    fun getMovieByReleasedYear(
+        @Query("primary_release_year") year: String,
+        @Query("api_key") apiKey: String
+    ): Call<MovieResponse>
 
     @GET("search/person")
-    Call<DirectorResponse> getPersonIdByName(@Query("query") String name, @Query("api_key") String apiKey);
+    fun getPersonIdByName(@Query("query") name: String, @Query("api_key") apiKey: String): Call<DirectorResponse>
 
     @GET("discover/movie")
-    Call<MovieResponse> getMovieByDirector(@Query("with_crew") int directorId, @Query("api_key") String apiKey);
+    fun getMovieByDirector(@Query("with_crew") directorId: Int, @Query("api_key") apiKey: String): Call<MovieResponse>
 
-    //https://api.themoviedb.org/3/genre/movie/list?api_key=efbdebf1b30ffab728c49495748e9dfa
     @GET("genre/movie/list")
-    Call<GenreResponse> getAllGenres(@Query("api_key")String apiKey);
+    fun getAllGenres(@Query("api_key") apiKey: String): Call<GenreResponse>
 
     @GET("discover/movie")
-    Call<MovieResponse> getMovieByGenre(@Query("with_genres") int genre, @Query("api_key") String apiKey);
+    fun getMovieByGenre(@Query("with_genres") genre: Int, @Query("api_key") apiKey: String): Call<MovieResponse>
 
-    //@Query("with_cast")
     @GET("discover/movie")
-    Call<MovieResponse> getMovieByActor(@Query("with_cast") int castId, @Query("api_key") String apiKey);
-
-
-
-
+    fun getMovieByActor(@Query("with_cast") castId: Int, @Query("api_key") apiKey: String): Call<MovieResponse>
 }

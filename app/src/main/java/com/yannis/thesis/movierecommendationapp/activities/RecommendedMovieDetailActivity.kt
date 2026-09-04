@@ -1,95 +1,88 @@
-package com.yannis.thesis.movierecommendationapp.activities;
+package com.yannis.thesis.movierecommendationapp.activities
 
-import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import android.widget.RatingBar;
+import android.os.Bundle
+import android.util.Log
+import android.widget.RatingBar
+import androidx.appcompat.app.AppCompatActivity
+import com.squareup.picasso.Picasso
+import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp
+import com.yannis.thesis.movierecommendationapp.R
+import com.yannis.thesis.movierecommendationapp.data.AppDatabase
+import com.yannis.thesis.movierecommendationapp.databinding.RecommendedMovieDetailActivityBinding
+import com.yannis.thesis.movierecommendationapp.models.MovieRecommendedForUser
+import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie
+import java.util.Date
+import kotlin.math.roundToInt
 
-import com.squareup.picasso.Picasso;
-import com.yannis.thesis.movierecommendationapp.models.MovieRecommendedForUser;
-import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie;
-import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
-import com.yannis.thesis.movierecommendationapp.data.AppDatabase;
-import com.yannis.thesis.movierecommendationapp.R;
-import com.yannis.thesis.movierecommendationapp.databinding.RecommendedMovieDetailActivityBinding;
+class RecommendedMovieDetailActivity : AppCompatActivity(), RatingBar.OnRatingBarChangeListener {
+    private lateinit var binding: RecommendedMovieDetailActivityBinding
+    private var movieID: String? = null
+    private var posterPathStr: String? = null
+    private var currentUserId: String? = null
+    private lateinit var database: AppDatabase
 
-import java.util.Date;
-import java.util.List;
-
-import android.util.Log;
-
-
-public class RecommendedMovieDetailActivity extends AppCompatActivity implements RatingBar.OnRatingBarChangeListener {
-    private RecommendedMovieDetailActivityBinding binding;
-    private String movieID;
-    private String posterPathStr;
-    private float mRating;
-    private String currentUserId;
-
-    private AppDatabase database;
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = RecommendedMovieDetailActivityBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        currentUserId = MovieRecommendationApp.getInstance().loggedInUserId;
-        database = AppDatabase.getInstance(this);
-        getIncomingIntent();
-
-        binding.ratingBar1.setOnRatingBarChangeListener(this);
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = RecommendedMovieDetailActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        currentUserId = MovieRecommendationApp.getInstance().loggedInUserId
+        database = AppDatabase.getInstance(this)
+        getIncomingIntent()
+        binding.ratingBar1.setOnRatingBarChangeListener(this)
     }
 
-    private void getIncomingIntent() {
-        if (getIntent().hasExtra("movie_title") && getIntent().hasExtra("movie_release_date")
-                && getIntent().hasExtra("movie_description") && getIntent().hasExtra("movie_id")
-                && getIntent().hasExtra("movie_poster_path") && getIntent().hasExtra("adapterName")) {
-            Log.d("MovieApp","intent was called from " + getIntent().getStringExtra("adapterName"));
-            binding.movieTitle.setText(getIntent().getStringExtra("movie_title"));
-            binding.movieReleaseDate.setText(getIntent().getStringExtra("movie_release_date"));
-            binding.movieDescription.setText(getIntent().getStringExtra("movie_description"));
-            movieID = getIntent().getStringExtra("movie_id");
-            posterPathStr = getIntent().getStringExtra("movie_poster_path");
-            Picasso.get()
-                    .load("https://image.tmdb.org/t/p/w500" + posterPathStr)
-                    .error(R.color.colorAccent)
-                    .into(binding.moviePoster);
+    private fun getIncomingIntent() {
+        if (intent.hasExtra("movie_title") && intent.hasExtra("movie_release_date") &&
+            intent.hasExtra("movie_description") && intent.hasExtra("movie_id") &&
+            intent.hasExtra("movie_poster_path") && intent.hasExtra("adapterName")
+        ) {
+            Log.d("MovieApp", "intent was called from ${intent.getStringExtra("adapterName")}")
+            binding.movieTitle.text = intent.getStringExtra("movie_title")
+            binding.movieReleaseDate.text = intent.getStringExtra("movie_release_date")
+            binding.movieDescription.text = intent.getStringExtra("movie_description")
+            movieID = intent.getStringExtra("movie_id")
+            posterPathStr = intent.getStringExtra("movie_poster_path")
+            Picasso.get().load("https://image.tmdb.org/t/p/w500$posterPathStr")
+                .error(R.color.colorAccent).into(binding.moviePoster)
         }
     }
 
-    private void rateMovie(String userid, String movieid, float rating,
-                           String title, String release, String description,
-                           String poster) {
-        Log.d("MovieApp","rating a movie");
-        UserRatesMovie urm = new UserRatesMovie(userid, movieid, Math.round(rating), new Date(),
-                poster, title, description, release);
-        database.userRatesMovieDao().insert(urm);
+    private fun rateMovie(
+        userid: String?,
+        movieid: String?,
+        rating: Float,
+        title: String,
+        release: String,
+        description: String,
+        poster: String?
+    ) {
+        Log.d("MovieApp", "rating a movie")
+        database.userRatesMovieDao().insert(
+            UserRatesMovie(userid, movieid, rating.roundToInt(), Date(), poster, title, description, release)
+        )
     }
 
-
-    //otan vathmologhsei o xrhsths thn tainia , tha prepei na :
-    //1. thn afairesoume apo ton pinaka MovieRecommendedForUser
-    //2. thn prosthesoume me th vathmologia pou evale o xrhsths ston pinaka UserRatesMovie
-    @Override
-    public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-        binding.ratingBar1.setRating(Math.round(ratingBar.getRating()));
-        String activeUserId = MovieRecommendationApp.getInstance().loggedInUserId;
-        deleteRecommendedMovie(movieID,activeUserId);
-        rateMovie(activeUserId, movieID,
-                binding.ratingBar1.getRating(), binding.movieTitle.getText().toString(),
-                binding.movieReleaseDate.getText().toString(),
-                binding.movieDescription.getText().toString(), posterPathStr);
-        binding.ratingBar1.setIsIndicator(true);
+    override fun onRatingChanged(ratingBar: RatingBar, rating: Float, fromUser: Boolean) {
+        val roundedRating = ratingBar.rating.roundToInt().toFloat()
+        binding.ratingBar1.setRating(roundedRating)
+        val activeUserId = MovieRecommendationApp.getInstance().loggedInUserId
+        deleteRecommendedMovie(movieID, activeUserId)
+        rateMovie(
+            activeUserId,
+            movieID,
+            roundedRating,
+            binding.movieTitle.text.toString(),
+            binding.movieReleaseDate.text.toString(),
+            binding.movieDescription.text.toString(),
+            posterPathStr
+        )
+        binding.ratingBar1.setIsIndicator(true)
     }
 
-
-    public void deleteRecommendedMovie(String movieId,String activeUserId) {
-        final List<MovieRecommendedForUser> result =
-                database.movieRecommendedForUserDao().findForMovie(activeUserId, movieId);
-        Log.d("MovieApp","delete recommened movie results before delete" + result.size());
-        database.movieRecommendedForUserDao().delete(result);
-        Log.d("MovieApp","delete recommened movie results after delete" + result.size());
+    fun deleteRecommendedMovie(movieId: String?, activeUserId: String?) {
+        val result = database.movieRecommendedForUserDao().findForMovie(activeUserId, movieId)
+        Log.d("MovieApp", "delete recommened movie results before delete${result.size}")
+        database.movieRecommendedForUserDao().delete(result)
+        Log.d("MovieApp", "delete recommened movie results after delete${result.size}")
     }
 }
