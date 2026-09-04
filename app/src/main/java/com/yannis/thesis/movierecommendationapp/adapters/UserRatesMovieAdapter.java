@@ -1,5 +1,6 @@
 package com.yannis.thesis.movierecommendationapp.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
@@ -106,6 +107,9 @@ public class UserRatesMovieAdapter extends RecyclerView.Adapter<UserRatesMovieAd
                 intent.putExtra("movie_poster_path",userRatesMovie.getMovie_poster());
                 Log.d("MovieApp","INTENT + " +userRatesMovie.getMovie_poster().toString());
 
+                if (!(mContext instanceof Activity)) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
                 mContext.startActivity(intent);
             }
         });
