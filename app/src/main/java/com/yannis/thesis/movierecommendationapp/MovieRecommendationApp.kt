@@ -1,7 +1,6 @@
 package com.yannis.thesis.movierecommendationapp
 
 import android.app.Application
-import com.yannis.thesis.movierecommendationapp.ui.activities.BaseActivity
 import com.yannis.thesis.movierecommendationapp.data.remote.APIService
 import com.yannis.thesis.movierecommendationapp.data.local.AppDatabase
 import com.yannis.thesis.movierecommendationapp.data.repositories.RetrofitMovieRepository
@@ -23,7 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieRecommendationApp : Application() {
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    @JvmField var lastActivity: BaseActivity? = null
     @JvmField var loggedInUserId: String? = null
     lateinit var userRepository: UserRepository
         private set
