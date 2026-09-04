@@ -14,10 +14,15 @@ import com.yannis.thesis.movierecommendationapp.domain.repositories.UserReposito
 import com.yannis.thesis.movierecommendationapp.domain.usecases.GenerateRecommendationsUseCase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieRecommendationApp : Application() {
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     @JvmField var lastActivity: BaseActivity? = null
     @JvmField var loggedInUserId: String? = null
     lateinit var userRepository: UserRepository
@@ -25,6 +30,8 @@ class MovieRecommendationApp : Application() {
     lateinit var ratingRepository: RatingRepository
         private set
     lateinit var recommendationRepository: RecommendationRepository
+        private set
+    lateinit var movieRepository: com.yannis.thesis.movierecommendationapp.domain.repositories.MovieRepository
         private set
     private lateinit var generateRecommendations: GenerateRecommendationsUseCase
 
@@ -44,14 +51,17 @@ class MovieRecommendationApp : Application() {
         ratingRepository = RoomRatingRepository(database.userRatesMovieDao())
         recommendationRepository =
             RoomRecommendationRepository(database.movieRecommendedForUserDao())
+        movieRepository = RetrofitMovieRepository(api, apiKey)
         generateRecommendations = GenerateRecommendationsUseCase(
             userRepository = userRepository,
             ratingRepository = ratingRepository,
             recommendationRepository = recommendationRepository,
-            movieRepository = RetrofitMovieRepository(api, apiKey)
+            movieRepository = movieRepository
         )
-        showAllUsers()
-        MovieRecommendationAlgorithm()
+        applicationScope.launch {
+            showAllUsers()
+            MovieRecommendationAlgorithm()
+        }
     }
 
     fun showAllUsers() {

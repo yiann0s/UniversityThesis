@@ -8,4 +8,6 @@ interface MovieRepository {
         onSuccess: (Movie?) -> Unit,
         onFailure: (Throwable) -> Unit
     )
+
+    suspend fun search(category: String, query: String): List<Movie> = emptyList()
 }

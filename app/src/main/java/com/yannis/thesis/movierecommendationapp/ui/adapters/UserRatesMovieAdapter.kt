@@ -9,7 +9,7 @@ import com.yannis.thesis.movierecommendationapp.databinding.MovieListRowBinding
 import com.yannis.thesis.movierecommendationapp.data.local.UserRatesMovie
 
 class UserRatesMovieAdapter(
-    private val movies: List<UserRatesMovie>,
+    private var movies: List<UserRatesMovie>,
     private val onMovieClick: (UserRatesMovie) -> Unit
 ) : RecyclerView.Adapter<UserRatesMovieAdapter.MovieViewHolder>() {
 
@@ -37,4 +37,9 @@ class UserRatesMovieAdapter(
     }
 
     override fun getItemCount(): Int = movies.size
+
+    fun submitList(movies: List<UserRatesMovie>) {
+        this.movies = movies
+        notifyDataSetChanged()
+    }
 }

@@ -10,7 +10,7 @@ import com.yannis.thesis.movierecommendationapp.databinding.MovieListRowBinding
 import com.yannis.thesis.movierecommendationapp.data.remote.Movie
 
 class MovieAdapter(
-    private val movies: List<Movie>,
+    private var movies: List<Movie>,
     private val onMovieClick: (Movie) -> Unit
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
@@ -39,4 +39,9 @@ class MovieAdapter(
     }
 
     override fun getItemCount(): Int = movies.size
+
+    fun submitList(movies: List<Movie>) {
+        this.movies = movies
+        notifyDataSetChanged()
+    }
 }
