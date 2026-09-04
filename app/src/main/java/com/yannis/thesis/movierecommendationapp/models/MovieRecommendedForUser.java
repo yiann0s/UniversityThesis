@@ -2,10 +2,15 @@ package com.yannis.thesis.movierecommendationapp.models;
 
 import java.util.Date;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.Ignore;
 
-public class MovieRecommendedForUser extends RealmObject {
+@Entity
+public class MovieRecommendedForUser {
+
+    @PrimaryKey(autoGenerate = true)
+    private long id;
 
     private String userId;
 
@@ -26,6 +31,7 @@ public class MovieRecommendedForUser extends RealmObject {
     public MovieRecommendedForUser() {
     }
 
+    @Ignore
     public MovieRecommendedForUser(String userId, String movieId, Double predictedRating, Date dateAndTime, String movie_poster, String movie_title, String movie_description, String movie_release) {
         this.userId = userId;
         this.movieId = movieId;
@@ -35,6 +41,14 @@ public class MovieRecommendedForUser extends RealmObject {
         this.movie_title = movie_title;
         this.movie_description = movie_description;
         this.movie_release = movie_release;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getUserId() {

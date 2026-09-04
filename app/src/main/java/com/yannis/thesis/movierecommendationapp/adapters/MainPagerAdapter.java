@@ -35,6 +35,7 @@ import com.yannis.thesis.movierecommendationapp.models.MovieResponse;
 import com.yannis.thesis.movierecommendationapp.models.MovieRecommendedForUser;
 import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie;
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
+import com.yannis.thesis.movierecommendationapp.data.AppDatabase;
 import com.yannis.thesis.movierecommendationapp.R;
 import com.yannis.thesis.movierecommendationapp.databinding.ViewMainTabBinding;
 import com.yannis.thesis.movierecommendationapp.databinding.ViewSearchTabBinding;
@@ -45,10 +46,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
-import io.realm.Sort;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
@@ -108,13 +105,14 @@ public class MainPagerAdapter extends PagerAdapter {
     retrofit2.Call<DirectorResponse> dcall;
     retrofit2.Call<GenreResponse> genreCall;
 
-    Realm realm = Realm.getDefaultInstance();
+    AppDatabase database;
 
 
 
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
+        database = AppDatabase.getInstance(container.getContext());
         View view;
         LayoutInflater layoutinflater = LayoutInflater.from(container.getContext());
         //sto prwto tab poy exei tis protaseis gia to xrhsth
@@ -127,11 +125,9 @@ public class MainPagerAdapter extends PagerAdapter {
             recyclerViewRecommendedMovies = binding.recyclerViewRec;
             recyclerViewRecommendedMovies.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
-            RealmQuery<MovieRecommendedForUser> queryRecommendation = realm
-                    .where(MovieRecommendedForUser.class)
-                    .equalTo("userId",MovieRecommendationApp.getInstance().getLoggedInUserId())
-                    .sort("predictedRating", Sort.DESCENDING);
-            RealmResults<MovieRecommendedForUser> movieRecommendations = queryRecommendation.findAll();
+            List<MovieRecommendedForUser> movieRecommendations =
+                    database.movieRecommendedForUserDao().findAllForUserByRating(
+                            MovieRecommendationApp.getInstance().loggedInUserId);
 
             recyclerViewRecommendedMovies.setAdapter(new MoviesRecommendedAdapter(
                     movieRecommendations, MovieRecommendationApp.getInstance()));
@@ -140,11 +136,9 @@ public class MainPagerAdapter extends PagerAdapter {
             recyclerViewRecentlyRatedMovies = binding.recyclerViewRat;
             recyclerViewRecentlyRatedMovies.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
-            RealmQuery<UserRatesMovie> queryRecentlyRated = realm.
-                    where(UserRatesMovie.class)
-                    .equalTo("userId",MovieRecommendationApp.getInstance().getLoggedInUserId())
-                    .sort("dateAndTime", Sort.DESCENDING);
-            RealmResults<UserRatesMovie> moviesRecentlyRated = queryRecentlyRated.findAll();
+            List<UserRatesMovie> moviesRecentlyRated =
+                    database.userRatesMovieDao().findAllForUser(
+                            MovieRecommendationApp.getInstance().loggedInUserId);
             recyclerViewRecentlyRatedMovies.setAdapter(new UserRatesMovieAdapter(
                     moviesRecentlyRated, MovieRecommendationApp.getInstance()));
         } else {

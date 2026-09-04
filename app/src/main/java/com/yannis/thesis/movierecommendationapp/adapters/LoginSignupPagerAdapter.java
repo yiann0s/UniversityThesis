@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
+import com.yannis.thesis.movierecommendationapp.data.AppDatabase;
 import com.yannis.thesis.movierecommendationapp.models.Activities;
 import com.yannis.thesis.movierecommendationapp.models.LoginSignupPagerEnum;
 import com.yannis.thesis.movierecommendationapp.models.User;
@@ -19,11 +20,6 @@ import com.yannis.thesis.movierecommendationapp.databinding.ViewSignupBinding;
 
 import java.util.UUID;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
-//import io.realm.Realm;
-//import io.realm.RealmResults;
 
 /**
  * Created by yiannos on 14-Nov-17.
@@ -41,12 +37,12 @@ public class LoginSignupPagerAdapter extends PagerAdapter {
 
     EditText signupEmail;
 
-    Realm realm;
+    AppDatabase database;
 
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
-        realm = Realm.getDefaultInstance();
+        database = AppDatabase.getInstance(container.getContext());
 
         View view;
         LayoutInflater layoutinflater = LayoutInflater.from(container.getContext());
@@ -112,21 +108,14 @@ public class LoginSignupPagerAdapter extends PagerAdapter {
     }
 
     private boolean isEmailUnique(String s) {
-        RealmQuery<User> query = realm.where(User.class)
-                .equalTo("email", s);
-        RealmResults<User> result = query.findAll();
-        return result.size() == 0;
+        return database.userDao().findByEmail(s) == null;
 
     }
 
     public void registerUser() {
-        // Persist your data in a transaction
-        realm.beginTransaction();
-        final User user = realm.createObject(User.class,
-                UUID.randomUUID().toString());
-        user.setEmail(signupEmail.getText().toString());
-        user.setPassword(signupPassword.getText().toString());
-        realm.commitTransaction();
+        final User user = new User(UUID.randomUUID().toString(), null,
+                signupEmail.getText().toString(), signupPassword.getText().toString());
+        database.userDao().insert(user);
     }
 
     public void emptyFields() {
@@ -151,10 +140,8 @@ public class LoginSignupPagerAdapter extends PagerAdapter {
     }
 
     private void validateUser(String email, String password) {
-        User userCheck = realm.where(User.class)
-                .equalTo("email", email).findFirst();
-        User passwordCheck = realm.where(User.class)
-                .equalTo("password", password).findFirst();
+        User userCheck = database.userDao().findByEmail(email);
+        User passwordCheck = database.userDao().findByPassword(password);
         if (userCheck == null) {
             MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("No such username exists");
             return;
@@ -163,12 +150,11 @@ public class LoginSignupPagerAdapter extends PagerAdapter {
             MovieRecommendationApp.getInstance().lastActivity.showErrorDialog("Wrong password :S");
             return;
         }
-        MovieRecommendationApp.getInstance().setLoggedInUserId(passwordCheck.getId());
+        MovieRecommendationApp.getInstance().loggedInUserId = passwordCheck.getId();
         Log.d("MovieApp","Current user id logged in is " +
-                MovieRecommendationApp.getInstance().getLoggedInUserId());
+                MovieRecommendationApp.getInstance().loggedInUserId);
         Activities.Main.replace(MovieRecommendationApp.getInstance().lastActivity);
 
     }
 
 }
-

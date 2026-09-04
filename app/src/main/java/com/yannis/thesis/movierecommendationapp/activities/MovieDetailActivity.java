@@ -8,6 +8,7 @@ import android.widget.RatingBar;
 import com.squareup.picasso.Picasso;
 import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie;
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
+import com.yannis.thesis.movierecommendationapp.data.AppDatabase;
 import com.yannis.thesis.movierecommendationapp.R;
 import com.yannis.thesis.movierecommendationapp.databinding.MovieDetailActivityBinding;
 
@@ -15,9 +16,6 @@ import java.util.Date;
 
 import android.util.Log;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 
 
 public class MovieDetailActivity extends AppCompatActivity implements RatingBar.OnRatingBarChangeListener {
@@ -26,6 +24,7 @@ public class MovieDetailActivity extends AppCompatActivity implements RatingBar.
     private String posterPathStr;
     private float mRating;
     private String currentUserId;
+    private AppDatabase database;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,7 +32,8 @@ public class MovieDetailActivity extends AppCompatActivity implements RatingBar.
         binding = MovieDetailActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        currentUserId = MovieRecommendationApp.getInstance().getLoggedInUserId();
+        currentUserId = MovieRecommendationApp.getInstance().loggedInUserId;
+        database = AppDatabase.getInstance(this);
         getIncomingIntent();
 
         if (!isMovieAlreadyRatedByCurrentUser()) {
@@ -64,47 +64,22 @@ public class MovieDetailActivity extends AppCompatActivity implements RatingBar.
     }
 
     private boolean isMovieAlreadyRatedByCurrentUser() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<UserRatesMovie> result;
-        try {
-            RealmQuery<UserRatesMovie> query = realm.where(UserRatesMovie.class)
-                    .equalTo("userId", currentUserId)
-                    .equalTo("movieId", movieID);
-            result = query.findAll();
-        } finally {
-            realm.close();
-        }
-        return result.size() != 0;
+        return database.userRatesMovieDao().findForMovie(currentUserId, movieID) != null;
     }
 
     private void rateMovie(String userid, String movieid, float rating,
                            String title, String release, String description,
                            String poster) {
         Log.d("MovieApp","rating a movie");
-        Realm realm = Realm.getDefaultInstance();
-        try {
-            realm.beginTransaction();
-            UserRatesMovie urm = realm.createObject(UserRatesMovie.class);
-            urm.setUserId(userid);
-            urm.setMovieId(movieid);
-            urm.setUserId(userid);
-            urm.setDateAndTime(new Date());
-            urm.setRating(Math.round(rating));
-            urm.setMovie_poster(poster);
-            urm.setMovie_title(title);
-            urm.setMovie_description(description);
-            urm.setMovie_release(release);
-            realm.commitTransaction();
-        } finally {
-            realm.close();
-//            MovieRecommendationApp.getInstance()
-        }
+        UserRatesMovie urm = new UserRatesMovie(userid, movieid, Math.round(rating), new Date(),
+                poster, title, description, release);
+        database.userRatesMovieDao().insert(urm);
     }
 
     @Override
     public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
         binding.ratingBar1.setRating(Math.round(ratingBar.getRating()));
-        rateMovie(MovieRecommendationApp.getInstance().getLoggedInUserId()
+        rateMovie(MovieRecommendationApp.getInstance().loggedInUserId
                 , movieID, binding.ratingBar1.getRating(), binding.movieTitle.getText().toString(),
                 binding.movieReleaseDate.getText().toString(),
                 binding.movieDescription.getText().toString(), posterPathStr);
@@ -112,18 +87,9 @@ public class MovieDetailActivity extends AppCompatActivity implements RatingBar.
     }
 
     public void displayMovieRating() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<UserRatesMovie> movieRatingResult;
-        try {
-            RealmQuery<UserRatesMovie> query = realm.where(UserRatesMovie.class)
-                    .equalTo("userId", currentUserId)
-                    .equalTo("movieId", movieID);
-            UserRatesMovie userRatesMovie = query.findFirst();
-            Log.d("MovieApp","User has rated this movie with a " + userRatesMovie.getRating());
-            binding.ratingBar1.setRating(userRatesMovie.getRating());
-        } finally {
-            realm.close();
-        }
+        UserRatesMovie userRatesMovie = database.userRatesMovieDao().findForMovie(currentUserId, movieID);
+        Log.d("MovieApp","User has rated this movie with a " + userRatesMovie.getRating());
+        binding.ratingBar1.setRating(userRatesMovie.getRating());
         binding.ratingBar1.setIsIndicator(true);
     }
 

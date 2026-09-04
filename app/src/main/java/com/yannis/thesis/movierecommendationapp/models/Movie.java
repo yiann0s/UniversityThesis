@@ -9,8 +9,6 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.realm.RealmObject;
-
 public class Movie {
     @SerializedName("poster_path")
     private String posterPath;

@@ -1,18 +1,19 @@
 package com.yannis.thesis.movierecommendationapp.models;
 
-import java.util.List;
-
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
+import androidx.room.Ignore;
 
 /**
  * Created by yiannos on 12-Feb-18.
  */
 
-public class User extends RealmObject{
+@Entity
+public class User {
 
     @PrimaryKey
+    @NonNull
     private String id;
     private String username;
     private String email;
@@ -21,6 +22,7 @@ public class User extends RealmObject{
     public User() {
     }
 
+    @Ignore
     public User(String id, String username, String email, String password) {
         this.id = id;
         this.username = username;

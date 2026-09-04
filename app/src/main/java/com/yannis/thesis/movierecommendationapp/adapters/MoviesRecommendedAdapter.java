@@ -30,7 +30,6 @@ import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie;
 
 import java.util.List;
 
-import io.realm.RealmResults;
 
 class MoviesRecommendedAdapter extends RecyclerView.Adapter<MoviesRecommendedAdapter.MovieViewHolder> {
     private Context mContext;

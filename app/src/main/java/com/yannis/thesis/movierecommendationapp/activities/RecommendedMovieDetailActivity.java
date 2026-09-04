@@ -9,16 +9,15 @@ import com.squareup.picasso.Picasso;
 import com.yannis.thesis.movierecommendationapp.models.MovieRecommendedForUser;
 import com.yannis.thesis.movierecommendationapp.models.UserRatesMovie;
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp;
+import com.yannis.thesis.movierecommendationapp.data.AppDatabase;
 import com.yannis.thesis.movierecommendationapp.R;
 import com.yannis.thesis.movierecommendationapp.databinding.RecommendedMovieDetailActivityBinding;
 
 import java.util.Date;
+import java.util.List;
 
 import android.util.Log;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 
 public class RecommendedMovieDetailActivity extends AppCompatActivity implements RatingBar.OnRatingBarChangeListener {
     private RecommendedMovieDetailActivityBinding binding;
@@ -27,7 +26,7 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
     private float mRating;
     private String currentUserId;
 
-    Realm realm = Realm.getDefaultInstance();
+    private AppDatabase database;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,7 +34,8 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
         binding = RecommendedMovieDetailActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        currentUserId = MovieRecommendationApp.getInstance().getLoggedInUserId();
+        currentUserId = MovieRecommendationApp.getInstance().loggedInUserId;
+        database = AppDatabase.getInstance(this);
         getIncomingIntent();
 
         binding.ratingBar1.setOnRatingBarChangeListener(this);
@@ -63,23 +63,9 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
                            String title, String release, String description,
                            String poster) {
         Log.d("MovieApp","rating a movie");
-        Realm realm = Realm.getDefaultInstance();
-        try {
-            realm.beginTransaction();
-            UserRatesMovie urm = realm.createObject(UserRatesMovie.class);
-            urm.setUserId(userid);
-            urm.setMovieId(movieid);
-            urm.setUserId(userid);
-            urm.setDateAndTime(new Date());
-            urm.setRating(Math.round(rating));
-            urm.setMovie_poster(poster);
-            urm.setMovie_title(title);
-            urm.setMovie_description(description);
-            urm.setMovie_release(release);
-            realm.commitTransaction();
-        } finally {
-            realm.close();
-        }
+        UserRatesMovie urm = new UserRatesMovie(userid, movieid, Math.round(rating), new Date(),
+                poster, title, description, release);
+        database.userRatesMovieDao().insert(urm);
     }
 
 
@@ -89,7 +75,7 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
     @Override
     public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
         binding.ratingBar1.setRating(Math.round(ratingBar.getRating()));
-        String activeUserId = MovieRecommendationApp.getInstance().getLoggedInUserId();
+        String activeUserId = MovieRecommendationApp.getInstance().loggedInUserId;
         deleteRecommendedMovie(movieID,activeUserId);
         rateMovie(activeUserId, movieID,
                 binding.ratingBar1.getRating(), binding.movieTitle.getText().toString(),
@@ -100,21 +86,10 @@ public class RecommendedMovieDetailActivity extends AppCompatActivity implements
 
 
     public void deleteRecommendedMovie(String movieId,String activeUserId) {
-        RealmQuery<MovieRecommendedForUser> query = realm.where(MovieRecommendedForUser.class)
-                .equalTo("userId", activeUserId)
-                .and()
-                .equalTo("movieId", movieId);
-        final RealmResults<MovieRecommendedForUser> result = query.findAll();
+        final List<MovieRecommendedForUser> result =
+                database.movieRecommendedForUserDao().findForMovie(activeUserId, movieId);
         Log.d("MovieApp","delete recommened movie results before delete" + result.size());
-        // All changes to data must happen in a transaction
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                // Delete all matches
-                result.deleteAllFromRealm();
-            }
-        });
+        database.movieRecommendedForUserDao().delete(result);
         Log.d("MovieApp","delete recommened movie results after delete" + result.size());
     }
 }
-
