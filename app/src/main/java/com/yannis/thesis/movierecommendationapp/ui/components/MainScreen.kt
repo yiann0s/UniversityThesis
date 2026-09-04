@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -21,12 +23,13 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -60,42 +63,70 @@ fun MainScreen(
     onClearError: () -> Unit
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(BrandColors.LightBackground)
-    ) {
-        TabRow(selectedTabIndex = selectedTab) {
-            Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }) {
-                Text("Recommendations", Modifier.padding(16.dp))
-            }
-            Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }) {
-                Text("Search", Modifier.padding(16.dp))
+    Scaffold(
+        backgroundColor = BrandColors.LightBackground,
+        bottomBar = {
+            BottomNavigation(
+                backgroundColor = BrandColors.DarkBlue,
+                contentColor = Color.White
+            ) {
+                BottomNavigationItem(
+                    selected = selectedTab == 0,
+                    onClick = { selectedTab = 0 },
+                    icon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                    label = { Text("Search") },
+                    selectedContentColor = BrandColors.Yellow,
+                    unselectedContentColor = Color.White.copy(alpha = 0.7f)
+                )
+                BottomNavigationItem(
+                    selected = selectedTab == 1,
+                    onClick = { selectedTab = 1 },
+                    icon = { Icon(Icons.Default.Favorite, contentDescription = "Recently rated") },
+                    label = { Text("Rated") },
+                    selectedContentColor = BrandColors.Yellow,
+                    unselectedContentColor = Color.White.copy(alpha = 0.7f)
+                )
+                BottomNavigationItem(
+                    selected = selectedTab == 2,
+                    onClick = { selectedTab = 2 },
+                    icon = { Icon(Icons.Default.Movie, contentDescription = "Recommendations") },
+                    label = { Text("Recommended") },
+                    selectedContentColor = BrandColors.Yellow,
+                    unselectedContentColor = Color.White.copy(alpha = 0.7f)
+                )
             }
         }
-        if (state.isLoading || state.isSearching) LinearProgressIndicator(Modifier.fillMaxWidth())
-        state.errorMessage?.let { message ->
-            Text(
-                text = message,
-                color = MaterialTheme.colors.error,
-                modifier = Modifier.padding(16.dp)
-            )
-            Button(onClick = onClearError, Modifier.padding(horizontal = 16.dp)) {
-                Text("Dismiss")
+    ) { contentPadding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
+        ) {
+            if (state.isLoading || state.isSearching) {
+                LinearProgressIndicator(Modifier.fillMaxWidth())
             }
-        }
-        if (selectedTab == 0) {
-            HomeContent(state, onRatedMovieClick, onRecommendedMovieClick)
-        } else {
-            SearchContent(state, onSearch, onMovieClick)
+            state.errorMessage?.let { message ->
+                Text(
+                    text = message,
+                    color = MaterialTheme.colors.error,
+                    modifier = Modifier.padding(16.dp)
+                )
+                Button(onClick = onClearError, Modifier.padding(horizontal = 16.dp)) {
+                    Text("Dismiss")
+                }
+            }
+            when (selectedTab) {
+                0 -> SearchContent(state, onSearch, onMovieClick)
+                1 -> RecentlyRatedContent(state, onRatedMovieClick)
+                else -> RecommendationsContent(state, onRecommendedMovieClick)
+            }
         }
     }
 }
 
 @Composable
-private fun HomeContent(
+private fun RecommendationsContent(
     state: MainUiState,
-    onRatedMovieClick: (UserRatesMovie) -> Unit,
     onRecommendedMovieClick: (MovieRecommendedForUser) -> Unit
 ) {
     LazyColumn(
@@ -107,21 +138,41 @@ private fun HomeContent(
                 title = "Recommended movies",
                 backgroundColor = BrandColors.RecommendationsBackground
             ) {
-                state.recommendations.forEach { movie ->
-                    MovieRow(movie.movie_title, movie.movie_release, movie.movie_description) {
-                        onRecommendedMovieClick(movie)
+                if (state.recommendations.isEmpty()) {
+                    Text("No movie recommendations available")
+                } else {
+                    state.recommendations.forEach { movie ->
+                        MovieRow(movie.movie_title, movie.movie_release, movie.movie_description) {
+                            onRecommendedMovieClick(movie)
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun RecentlyRatedContent(
+    state: MainUiState,
+    onRatedMovieClick: (UserRatesMovie) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         item {
             MovieSection(
                 title = "Recently rated movies",
                 backgroundColor = BrandColors.RatedBackground
             ) {
-                state.recentlyRated.forEach { movie ->
-                    MovieRow(movie.movie_title, movie.movie_release, movie.movie_description) {
-                        onRatedMovieClick(movie)
+                if (state.recentlyRated.isEmpty()) {
+                    Text("Not any movies rated recently")
+                } else {
+                    state.recentlyRated.forEach { movie ->
+                        MovieRow(movie.movie_title, movie.movie_release, movie.movie_description) {
+                            onRatedMovieClick(movie)
+                        }
                     }
                 }
             }

@@ -26,12 +26,12 @@ import com.yannis.thesis.movierecommendationapp.data.remote.Movie
 import com.yannis.thesis.movierecommendationapp.ui.components.LoginSignupScreen
 import com.yannis.thesis.movierecommendationapp.ui.components.MainScreen
 import com.yannis.thesis.movierecommendationapp.ui.components.MovieDetailScreen
-import com.yannis.thesis.movierecommendationapp.ui.components.RecommendedMovieDetailScreen
 import com.yannis.thesis.movierecommendationapp.ui.theme.MovieRecommendationTheme
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.AuthViewModel
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.AuthViewModelFactory
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MainViewModel
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MainViewModelFactory
+import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MovieDetailUiState
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MovieDetailViewModel
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MovieDetailViewModelFactory
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.RecommendedMovieDetailViewModel
@@ -210,12 +210,17 @@ fun AppNavHost() {
                     viewModel.clearError()
                 }
             }
-            RecommendedMovieDetailScreen(
+            MovieDetailScreen(
                 title = title,
                 releaseDate = releaseDate,
                 description = description,
                 posterPath = posterPath,
-                state = state,
+                state = MovieDetailUiState(
+                    existingRating = state.submittedRating,
+                    isLoading = state.isSubmitting,
+                    isSubmitting = state.isSubmitting,
+                    errorMessage = state.errorMessage
+                ),
                 onRatingSelected = { rating ->
                     viewModel.submitRating(
                         rating = rating,

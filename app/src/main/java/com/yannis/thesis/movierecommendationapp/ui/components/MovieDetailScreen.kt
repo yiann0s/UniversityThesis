@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -65,6 +66,7 @@ internal fun MovieDetailContent(
     onRatingSelected: (Int) -> Unit
 ) {
     var selectedRating by remember { mutableStateOf(rating) }
+    val isPreview = LocalInspectionMode.current
     LaunchedEffect(rating) {
         if (rating != null) selectedRating = rating
     }
@@ -82,10 +84,15 @@ internal fun MovieDetailContent(
                 }
             },
             update = { imageView ->
-                Picasso.get()
-                    .load("https://image.tmdb.org/t/p/w500${posterPath.orEmpty()}")
-                    .error(R.color.colorAccent)
-                    .into(imageView)
+                if (isPreview || posterPath.isNullOrBlank()) {
+                    imageView.setImageResource(R.drawable.movie_icon)
+                } else {
+                    Picasso.Builder(imageView.context)
+                        .build()
+                        .load("https://image.tmdb.org/t/p/w500$posterPath")
+                        .error(R.color.colorAccent)
+                        .into(imageView)
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
