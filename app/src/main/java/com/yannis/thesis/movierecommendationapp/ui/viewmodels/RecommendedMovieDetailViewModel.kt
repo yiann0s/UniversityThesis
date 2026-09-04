@@ -17,7 +17,8 @@ import kotlinx.coroutines.withContext
 data class RecommendedMovieDetailUiState(
     val isSubmitting: Boolean = false,
     val errorMessage: String? = null,
-    val submitted: Boolean = false
+    val submitted: Boolean = false,
+    val submittedRating: Int? = null
 )
 
 class RecommendedMovieDetailViewModel(
@@ -57,7 +58,11 @@ class RecommendedMovieDetailViewModel(
                     )
                 }
             }.onSuccess {
-                _uiState.value = _uiState.value.copy(isSubmitting = false, submitted = true)
+                _uiState.value = _uiState.value.copy(
+                    isSubmitting = false,
+                    submitted = true,
+                    submittedRating = rating
+                )
             }.onFailure { error ->
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,

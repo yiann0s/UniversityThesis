@@ -4,24 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RatingBar
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.squareup.picasso.Picasso
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.LaunchedEffect
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp
-import com.yannis.thesis.movierecommendationapp.R
-import com.yannis.thesis.movierecommendationapp.databinding.RecommendedMovieDetailActivityBinding
 import com.yannis.thesis.movierecommendationapp.ui.activities.BaseActivity
+import com.yannis.thesis.movierecommendationapp.ui.components.RecommendedMovieDetailScreen
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.RecommendedMovieDetailViewModel
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.RecommendedMovieDetailViewModelFactory
-import kotlin.math.roundToInt
-import kotlinx.coroutines.launch
 
-class RecommendedMovieDetailFragment : Fragment(), RatingBar.OnRatingBarChangeListener {
-    private lateinit var binding: RecommendedMovieDetailActivityBinding
+class RecommendedMovieDetailFragment : Fragment() {
+    private lateinit var composeView: ComposeView
     private var movieId: String? = null
     private var posterPath: String? = null
     private var title: String? = null
@@ -45,48 +41,47 @@ class RecommendedMovieDetailFragment : Fragment(), RatingBar.OnRatingBarChangeLi
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.recommended_movie_detail_activity, container, false)
+    ): View = ComposeView(requireContext()).also {
+        composeView = it
+        it.setViewCompositionStrategy(
+            ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = RecommendedMovieDetailActivityBinding.bind(view)
         val arguments = arguments ?: Bundle()
         movieId = arguments.getString(ARG_MOVIE_ID)
         posterPath = arguments.getString(ARG_POSTER_PATH)
         title = arguments.getString(ARG_TITLE)
         description = arguments.getString(ARG_DESCRIPTION)
         releaseDate = arguments.getString(ARG_RELEASE_DATE)
-        binding.movieTitle.text = title
-        binding.movieReleaseDate.text = releaseDate
-        binding.movieDescription.text = description
-        Picasso.get().load("https://image.tmdb.org/t/p/w500$posterPath")
-            .error(R.color.colorAccent).into(binding.moviePoster)
-        binding.ratingBar1.setOnRatingBarChangeListener(this)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    binding.ratingBar1.setIsIndicator(state.isSubmitting || state.submitted)
-                    state.errorMessage?.let {
-                        (activity as? BaseActivity)?.showErrorDialog(it)
-                        viewModel.clearError()
-                    }
+        composeView.setContent {
+            val state = viewModel.uiState.collectAsStateWithLifecycle().value
+            LaunchedEffect(state.errorMessage) {
+                state.errorMessage?.let { message ->
+                    (activity as? BaseActivity)?.showErrorDialog(message)
+                    viewModel.clearError()
                 }
             }
+            RecommendedMovieDetailScreen(
+                title = title,
+                releaseDate = releaseDate,
+                description = description,
+                posterPath = posterPath,
+                state = state,
+                onRatingSelected = { rating ->
+                    viewModel.submitRating(
+                        rating,
+                        posterPath,
+                        title,
+                        description,
+                        releaseDate
+                    )
+                }
+            )
         }
-    }
-
-    override fun onRatingChanged(ratingBar: RatingBar, rating: Float, fromUser: Boolean) {
-        if (!fromUser) return
-        val roundedRating = rating.roundToInt().toFloat()
-        binding.ratingBar1.rating = roundedRating
-        viewModel.submitRating(
-            roundedRating.roundToInt(),
-            posterPath,
-            title,
-            description,
-            releaseDate
-        )
     }
 
     companion object {
