@@ -3,7 +3,6 @@ package com.yannis.thesis.movierecommendationapp.data.local
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.yannis.thesis.movierecommendationapp.data.local.User
 
 @Dao
 interface UserDao {

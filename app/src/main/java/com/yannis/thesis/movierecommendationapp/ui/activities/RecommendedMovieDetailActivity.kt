@@ -8,7 +8,6 @@ import com.squareup.picasso.Picasso
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp
 import com.yannis.thesis.movierecommendationapp.R
 import com.yannis.thesis.movierecommendationapp.databinding.RecommendedMovieDetailActivityBinding
-import com.yannis.thesis.movierecommendationapp.data.local.MovieRecommendedForUser
 import com.yannis.thesis.movierecommendationapp.data.local.UserRatesMovie
 import java.util.Date
 import kotlin.math.roundToInt

@@ -1,9 +1,5 @@
 package com.yannis.thesis.movierecommendationapp.data.remote
 
-import com.yannis.thesis.movierecommendationapp.data.remote.DirectorResponse
-import com.yannis.thesis.movierecommendationapp.data.remote.GenreResponse
-import com.yannis.thesis.movierecommendationapp.data.remote.Movie
-import com.yannis.thesis.movierecommendationapp.data.remote.MovieResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.POST

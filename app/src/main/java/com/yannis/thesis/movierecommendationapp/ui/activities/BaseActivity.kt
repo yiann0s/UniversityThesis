@@ -3,7 +3,6 @@ package com.yannis.thesis.movierecommendationapp.ui.activities
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Bundle
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp

@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.yannis.thesis.movierecommendationapp.data.local.MovieRecommendedForUser
 
 @Dao
 interface MovieRecommendedForUserDao {

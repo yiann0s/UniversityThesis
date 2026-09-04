@@ -63,7 +63,7 @@ class MovieRecommendationApp : Application() {
 
     companion object {
         private var appInstance: MovieRecommendationApp? = null
-            private set
+            set
         const val apiKey = "efbdebf1b30ffab728c49495748e9dfa"
         @JvmStatic fun getApiKey() = apiKey
         @JvmStatic fun getInstance() = appInstance!!

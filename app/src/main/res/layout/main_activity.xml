@@ -7,8 +7,6 @@
     android:background="@color/watermelon"
     tools:context="com.yannis.thesis.movierecommendationapp.ui.activities.MainActivity">
         <androidx.coordinatorlayout.widget.CoordinatorLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/toptabs"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

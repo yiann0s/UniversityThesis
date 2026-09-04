@@ -16,7 +16,6 @@ import com.yannis.thesis.movierecommendationapp.databinding.ViewSearchTabBinding
 import com.yannis.thesis.movierecommendationapp.data.remote.DirectorResponse
 import com.yannis.thesis.movierecommendationapp.data.remote.GenreResponse
 import com.yannis.thesis.movierecommendationapp.domain.model.MainPagerEnum
-import com.yannis.thesis.movierecommendationapp.data.remote.Movie
 import com.yannis.thesis.movierecommendationapp.data.remote.MovieResponse
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -155,12 +154,12 @@ class MainPagerAdapter : PagerAdapter() {
         override fun onFailure(call: Call<MovieResponse>, t: Throwable) = Unit
     }
 
-    override fun getCount(): Int = MainPagerEnum.values().size
+    override fun getCount(): Int = MainPagerEnum.entries.size
 
     override fun isViewFromObject(view: View, objectValue: Any): Boolean = view === objectValue
 
     override fun getPageTitle(position: Int): CharSequence {
         return MovieRecommendationApp.getInstance()
-            .getString(MainPagerEnum.values()[position].titleResId)
+            .getString(MainPagerEnum.entries[position].titleResId)
     }
 }

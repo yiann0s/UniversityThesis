@@ -47,12 +47,12 @@ class LoginSignupPagerAdapter : PagerAdapter() {
         container.removeView(view as View)
     }
 
-    override fun getCount(): Int = LoginSignupPagerEnum.values().size
+    override fun getCount(): Int = LoginSignupPagerEnum.entries.size
 
     override fun isViewFromObject(view: View, objectValue: Any): Boolean = view === objectValue
 
     override fun getPageTitle(position: Int): CharSequence {
-        val page = LoginSignupPagerEnum.values()[position]
+        val page = LoginSignupPagerEnum.entries[position]
         return MovieRecommendationApp.getInstance().getString(page.titleResId)
     }
 

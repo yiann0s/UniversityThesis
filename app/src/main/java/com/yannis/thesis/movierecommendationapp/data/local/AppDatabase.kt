@@ -6,9 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.yannis.thesis.movierecommendationapp.data.local.MovieRecommendedForUser
-import com.yannis.thesis.movierecommendationapp.data.local.User
-import com.yannis.thesis.movierecommendationapp.data.local.UserRatesMovie
 import java.util.Date
 
 class RoomConverters {

@@ -21,7 +21,7 @@ class GenerateRecommendationsUseCase(
     fun invoke(activeUserId: String) {
         val neighbours = userRepository.findAllExcept(activeUserId)
             .filter { similarity(activeUserId, it.id) >= similarityThreshold }
-            .mapNotNull { it.id }
+            .map { it.id }
 
         val ratedMovieIds = ratingRepository.findAllForUser(activeUserId)
             .mapNotNull { it.movieId }
