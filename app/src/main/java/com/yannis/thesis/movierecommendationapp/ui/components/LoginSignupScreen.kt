@@ -19,6 +19,7 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,9 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yannis.thesis.movierecommendationapp.R
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.AuthUiState
-
-private val LoginBackground = Color(0xFF4897D8)
-private val LoginAccent = Color(0xFFFA6E59)
+import com.yannis.thesis.movierecommendationapp.ui.theme.BrandColors
 
 @Composable
 fun LoginSignupScreen(
@@ -72,7 +71,7 @@ fun LoginSignupScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LoginBackground)
+            .background(BrandColors.PrimaryBlue)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -145,7 +144,8 @@ private fun AuthForm(
             label = { Text("Email") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            colors = authFieldColors()
         )
         TextField(
             value = password,
@@ -154,14 +154,15 @@ private fun AuthForm(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            colors = authFieldColors()
         )
         Button(
             onClick = onSubmit,
             enabled = !isLoading,
             modifier = Modifier.fillMaxWidth(),
             colors = androidx.compose.material.ButtonDefaults.buttonColors(
-                backgroundColor = LoginAccent,
+                backgroundColor = BrandColors.Coral,
                 contentColor = Color.White
             )
         ) {
@@ -173,6 +174,18 @@ private fun AuthForm(
         }
     }
 }
+
+@Composable
+private fun authFieldColors() = TextFieldDefaults.textFieldColors(
+    backgroundColor = BrandColors.LoginField,
+    textColor = Color.White,
+    cursorColor = BrandColors.Yellow,
+    focusedIndicatorColor = BrandColors.Yellow,
+    unfocusedIndicatorColor = Color.White.copy(alpha = 0.75f),
+    focusedLabelColor = BrandColors.Yellow,
+    unfocusedLabelColor = Color.White.copy(alpha = 0.9f),
+    placeholderColor = Color.White.copy(alpha = 0.8f)
+)
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 640)
 @Composable

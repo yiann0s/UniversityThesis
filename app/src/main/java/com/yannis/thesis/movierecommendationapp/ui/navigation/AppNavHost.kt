@@ -27,6 +27,7 @@ import com.yannis.thesis.movierecommendationapp.ui.components.LoginSignupScreen
 import com.yannis.thesis.movierecommendationapp.ui.components.MainScreen
 import com.yannis.thesis.movierecommendationapp.ui.components.MovieDetailScreen
 import com.yannis.thesis.movierecommendationapp.ui.components.RecommendedMovieDetailScreen
+import com.yannis.thesis.movierecommendationapp.ui.theme.MovieRecommendationTheme
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.AuthViewModel
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.AuthViewModelFactory
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MainViewModel
@@ -71,7 +72,8 @@ fun AppNavHost() {
     val app = LocalContext.current.applicationContext as MovieRecommendationApp
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Routes.LOGIN) {
+    MovieRecommendationTheme {
+        NavHost(navController = navController, startDestination = Routes.LOGIN) {
         composable(Routes.LOGIN) {
             val viewModel: AuthViewModel = viewModel(
                 factory = AuthViewModelFactory(app.userRepository)
@@ -226,6 +228,7 @@ fun AppNavHost() {
             )
             MessageDialog(errorMessage, onDismiss = { errorMessage = null })
         }
+    }
     }
 }
 

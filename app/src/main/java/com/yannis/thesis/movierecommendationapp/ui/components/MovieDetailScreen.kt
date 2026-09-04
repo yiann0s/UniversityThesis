@@ -30,6 +30,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.squareup.picasso.Picasso
 import com.yannis.thesis.movierecommendationapp.R
 import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MovieDetailUiState
+import com.yannis.thesis.movierecommendationapp.ui.theme.BrandColors
 
 @Composable
 fun MovieDetailScreen(
@@ -70,7 +71,7 @@ internal fun MovieDetailContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFDB5C))
+            .background(BrandColors.Yellow)
             .verticalScroll(rememberScrollState())
             .padding(bottom = 16.dp)
     ) {
@@ -93,18 +94,18 @@ internal fun MovieDetailContent(
         Text(
             text = title.orEmpty(),
             style = MaterialTheme.typography.h5,
-            color = Color(0xFFF72808),
+            color = BrandColors.DarkCoral,
             modifier = Modifier.padding(start = 10.dp, top = 10.dp)
         )
         Text(
             text = releaseDate.orEmpty(),
             style = MaterialTheme.typography.subtitle1,
-            color = Color(0xFFF8A055),
+            color = BrandColors.Orange,
             modifier = Modifier.padding(start = 10.dp, top = 4.dp)
         )
         Text(
             text = description.orEmpty(),
-            color = Color(0xFFFA6E59),
+            color = BrandColors.Coral,
             modifier = Modifier.padding(start = 10.dp, top = 5.dp, end = 20.dp)
         )
         if (isLoading) {
@@ -133,7 +134,7 @@ internal fun RatingStars(
         (1..5).forEach { value ->
             Text(
                 text = if (rating != null && value <= rating) "★" else "☆",
-                color = Color(0xFFF72808),
+                color = BrandColors.DarkCoral,
                 style = MaterialTheme.typography.h4,
                 modifier = Modifier
                     .size(42.dp)
