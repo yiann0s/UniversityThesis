@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:exported="false">
 
             <meta-data
@@ -24,11 +24,11 @@
         </activity>
 
         <activity
-            android:name=".activities.BaseActivity"
+            android:name=".ui.activities.BaseActivity"
             android:exported="false" />
 
         <activity
-            android:name=".activities.LoginSignupActivity"
+            android:name=".ui.activities.LoginSignupActivity"
             android:exported="true">
 
             <intent-filter>
@@ -39,11 +39,11 @@
         </activity>
 
         <activity
-            android:name=".activities.MovieDetailActivity"
+            android:name=".ui.activities.MovieDetailActivity"
             android:exported="false" />
 
         <activity
-            android:name=".activities.RecommendedMovieDetailActivity"
+            android:name=".ui.activities.RecommendedMovieDetailActivity"
             android:exported="false" />
 
     </application>
