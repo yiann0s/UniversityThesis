@@ -1,4 +1,4 @@
-package com.yannis.thesis.movierecommendationapp.ui.viewmodels
+package com.yannis.thesis.movierecommendationapp.ui.login_signup_screen
 
 import android.util.Patterns
 import androidx.lifecycle.ViewModel

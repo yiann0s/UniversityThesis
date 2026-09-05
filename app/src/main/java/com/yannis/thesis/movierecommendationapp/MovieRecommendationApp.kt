@@ -58,7 +58,7 @@ class MovieRecommendationApp : Application() {
         )
         applicationScope.launch {
             showAllUsers()
-            MovieRecommendationAlgorithm()
+            movieRecommendationAlgorithm()
         }
     }
 
@@ -66,12 +66,11 @@ class MovieRecommendationApp : Application() {
         userRepository.getAll()
     }
 
-    fun MovieRecommendationAlgorithm() =
+    fun movieRecommendationAlgorithm() =
         generateRecommendations.invoke("3c5303e9-0b5e-493a-98e8-184893dbb261")
 
     companion object {
         private var appInstance: MovieRecommendationApp? = null
-            set
         const val apiKey = "efbdebf1b30ffab728c49495748e9dfa"
         @JvmStatic fun getApiKey() = apiKey
         @JvmStatic fun getInstance() = appInstance!!

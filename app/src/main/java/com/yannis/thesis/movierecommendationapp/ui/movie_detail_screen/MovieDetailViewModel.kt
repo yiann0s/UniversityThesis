@@ -1,4 +1,4 @@
-package com.yannis.thesis.movierecommendationapp.ui.viewmodels
+package com.yannis.thesis.movierecommendationapp.ui.movie_detail_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

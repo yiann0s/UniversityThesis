@@ -1,9 +1,8 @@
-package com.yannis.thesis.movierecommendationapp.ui.viewmodels
+package com.yannis.thesis.movierecommendationapp.ui.movie_detail_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.yannis.thesis.movierecommendationapp.data.local.MovieRecommendedForUser
 import com.yannis.thesis.movierecommendationapp.data.local.UserRatesMovie
 import com.yannis.thesis.movierecommendationapp.domain.repositories.RatingRepository
 import com.yannis.thesis.movierecommendationapp.domain.repositories.RecommendationRepository

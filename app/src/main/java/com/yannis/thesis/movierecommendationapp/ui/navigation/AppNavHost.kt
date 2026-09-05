@@ -23,19 +23,19 @@ import com.yannis.thesis.movierecommendationapp.MovieRecommendationApp
 import com.yannis.thesis.movierecommendationapp.data.local.MovieRecommendedForUser
 import com.yannis.thesis.movierecommendationapp.data.local.UserRatesMovie
 import com.yannis.thesis.movierecommendationapp.data.remote.Movie
-import com.yannis.thesis.movierecommendationapp.ui.components.LoginSignupScreen
-import com.yannis.thesis.movierecommendationapp.ui.components.MainScreen
-import com.yannis.thesis.movierecommendationapp.ui.components.MovieDetailScreen
+import com.yannis.thesis.movierecommendationapp.ui.login_signup_screen.LoginSignupScreen
+import com.yannis.thesis.movierecommendationapp.ui.main_screen.MainScreen
+import com.yannis.thesis.movierecommendationapp.ui.movie_detail_screen.MovieDetailScreen
 import com.yannis.thesis.movierecommendationapp.ui.theme.MovieRecommendationTheme
-import com.yannis.thesis.movierecommendationapp.ui.viewmodels.AuthViewModel
-import com.yannis.thesis.movierecommendationapp.ui.viewmodels.AuthViewModelFactory
-import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MainViewModel
-import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MainViewModelFactory
-import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MovieDetailUiState
-import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MovieDetailViewModel
-import com.yannis.thesis.movierecommendationapp.ui.viewmodels.MovieDetailViewModelFactory
-import com.yannis.thesis.movierecommendationapp.ui.viewmodels.RecommendedMovieDetailViewModel
-import com.yannis.thesis.movierecommendationapp.ui.viewmodels.RecommendedMovieDetailViewModelFactory
+import com.yannis.thesis.movierecommendationapp.ui.login_signup_screen.AuthViewModel
+import com.yannis.thesis.movierecommendationapp.ui.login_signup_screen.AuthViewModelFactory
+import com.yannis.thesis.movierecommendationapp.ui.main_screen.MainViewModel
+import com.yannis.thesis.movierecommendationapp.ui.main_screen.MainViewModelFactory
+import com.yannis.thesis.movierecommendationapp.ui.movie_detail_screen.MovieDetailUiState
+import com.yannis.thesis.movierecommendationapp.ui.movie_detail_screen.MovieDetailViewModel
+import com.yannis.thesis.movierecommendationapp.ui.movie_detail_screen.MovieDetailViewModelFactory
+import com.yannis.thesis.movierecommendationapp.ui.movie_detail_screen.RecommendedMovieDetailViewModel
+import com.yannis.thesis.movierecommendationapp.ui.movie_detail_screen.RecommendedMovieDetailViewModelFactory
 
 private object Routes {
     const val LOGIN = "login"

@@ -1,4 +1,4 @@
-package com.yannis.thesis.movierecommendationapp.ui.activities
+package com.yannis.thesis.movierecommendationapp.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
