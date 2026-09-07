@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
@@ -37,15 +39,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import android.widget.ImageView
 import com.yannis.thesis.movierecommendationapp.data.local.MovieRecommendedForUser
 import com.yannis.thesis.movierecommendationapp.data.local.UserRatesMovie
 import com.yannis.thesis.movierecommendationapp.data.remote.Movie
+import com.squareup.picasso.Picasso
+import com.yannis.thesis.movierecommendationapp.R
 import com.yannis.thesis.movierecommendationapp.ui.theme.BrandColors
 
 private val categories = listOf("Title", "Released", "Director", "Genre", "Actors")
@@ -139,7 +146,12 @@ private fun RecommendationsContent(
                     Text("No movie recommendations available")
                 } else {
                     state.recommendations.forEach { movie ->
-                        MovieRow(movie.movie_title, movie.movie_release, movie.movie_description) {
+                        MovieRow(
+                            title = movie.movie_title,
+                            release = movie.movie_release,
+                            description = movie.movie_description,
+                            posterPath = movie.movie_poster
+                        ) {
                             onRecommendedMovieClick(movie)
                         }
                     }
@@ -167,7 +179,12 @@ private fun RecentlyRatedContent(
                     Text("Not any movies rated recently")
                 } else {
                     state.recentlyRated.forEach { movie ->
-                        MovieRow(movie.movie_title, movie.movie_release, movie.movie_description) {
+                        MovieRow(
+                            title = movie.movie_title,
+                            release = movie.movie_release,
+                            description = movie.movie_description,
+                            posterPath = movie.movie_poster
+                        ) {
                             onRatedMovieClick(movie)
                         }
                     }
@@ -252,7 +269,12 @@ private fun SearchContent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(state.searchResults) { movie ->
-                MovieRow(movie.title, movie.releaseDate, movie.overview) {
+                MovieRow(
+                    title = movie.title,
+                    release = movie.releaseDate,
+                    description = movie.overview,
+                    posterPath = movie.posterPath
+                ) {
                     onMovieClick(movie)
                 }
             }
@@ -261,17 +283,52 @@ private fun SearchContent(
 }
 
 @Composable
-private fun MovieRow(title: String?, release: String?, description: String?, onClick: () -> Unit) {
-    Column(
+private fun MovieRow(
+    title: String?,
+    release: String?,
+    description: String?,
+    posterPath: String?,
+    onClick: () -> Unit
+) {
+    Row(
         Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(12.dp)
     ) {
-        Text(title.orEmpty(), style = MaterialTheme.typography.subtitle1)
-        Text(release.orEmpty(), style = MaterialTheme.typography.caption)
-        Text(description.orEmpty(), maxLines = 3)
+        MoviePoster(posterPath)
+        Column(Modifier.padding(start = 12.dp)) {
+            Text(title.orEmpty(), style = MaterialTheme.typography.subtitle1)
+            Text(release.orEmpty(), style = MaterialTheme.typography.caption)
+            Text(description.orEmpty(), maxLines = 3)
+        }
     }
+}
+
+@Composable
+private fun MoviePoster(posterPath: String?) {
+    AndroidView(
+        factory = { context ->
+            ImageView(context).apply {
+                scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+        },
+        update = { imageView ->
+            Picasso.get().cancelRequest(imageView)
+            if (posterPath.isNullOrBlank()) {
+                imageView.setImageResource(R.drawable.movie_icon)
+            } else {
+                Picasso.get()
+                    .load("https://image.tmdb.org/t/p/w185$posterPath")
+                    .placeholder(R.drawable.movie_icon)
+                    .error(R.drawable.movie_icon)
+                    .into(imageView)
+            }
+        },
+        modifier = Modifier
+            .size(width = 64.dp, height = 92.dp)
+            .clip(RoundedCornerShape(6.dp))
+    )
 }
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 640)
