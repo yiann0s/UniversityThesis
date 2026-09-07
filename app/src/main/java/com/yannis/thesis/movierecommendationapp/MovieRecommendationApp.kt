@@ -49,7 +49,10 @@ class MovieRecommendationApp : Application() {
         ratingRepository = RoomRatingRepository(database.userRatesMovieDao())
         recommendationRepository =
             RoomRecommendationRepository(database.movieRecommendedForUserDao())
-        movieRepository = RetrofitMovieRepository(api, apiKey)
+        check(BuildConfig.TMDB_API_KEY.isNotBlank()) {
+            "TMDB_API_KEY is missing. Add it to local.properties or the TMDB_API_KEY environment variable."
+        }
+        movieRepository = RetrofitMovieRepository(api, BuildConfig.TMDB_API_KEY)
         generateRecommendations = GenerateRecommendationsUseCase(
             userRepository = userRepository,
             ratingRepository = ratingRepository,
@@ -71,8 +74,6 @@ class MovieRecommendationApp : Application() {
 
     companion object {
         private var appInstance: MovieRecommendationApp? = null
-        const val apiKey = "efbdebf1b30ffab728c49495748e9dfa"
-        @JvmStatic fun getApiKey() = apiKey
         @JvmStatic fun getInstance() = appInstance!!
     }
 }
