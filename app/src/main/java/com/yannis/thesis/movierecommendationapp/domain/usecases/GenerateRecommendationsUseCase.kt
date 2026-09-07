@@ -18,7 +18,7 @@ class GenerateRecommendationsUseCase(
     private val similarityThreshold: Double = 0.5,
     private val predictionThreshold: Double = 3.0
 ) {
-    fun invoke(activeUserId: String) {
+    suspend fun invoke(activeUserId: String) {
         val neighbours = userRepository.findAllExcept(activeUserId)
             .filter { similarity(activeUserId, it.id) >= similarityThreshold }
             .map { it.id }
@@ -36,7 +36,7 @@ class GenerateRecommendationsUseCase(
         }
     }
 
-    private fun predict(activeUserId: String, movieId: String, neighbours: List<String>) {
+    private suspend fun predict(activeUserId: String, movieId: String, neighbours: List<String>) {
         val activeAverage = averageRating(activeUserId)
         var numerator = 0.0
         var denominator = 0.0
@@ -53,10 +53,9 @@ class GenerateRecommendationsUseCase(
         val prediction = activeAverage + numerator / denominator
         if (prediction < predictionThreshold) return
 
-        movieRepository.getMovieDetails(
-            movieId = movieId.toInt(),
-            onSuccess = { movie ->
-                if (movie == null) return@getMovieDetails
+        try {
+            val movie = movieRepository.getMovieDetails(movieId.toInt())
+            if (movie != null) {
                 recommendationRepository.delete(
                     recommendationRepository.findForMovie(activeUserId, movieId)
                 )
@@ -72,11 +71,10 @@ class GenerateRecommendationsUseCase(
                         movie.releaseDate
                     )
                 )
-            },
-            onFailure = { error ->
-                Log.e("MovieApp", "Failure loading movie details", error)
             }
-        )
+        } catch (error: Throwable) {
+            Log.e("MovieApp", "Failure loading movie details for $movieId", error)
+        }
     }
 
     private fun similarity(activeUserId: String, otherUserId: String): Double {

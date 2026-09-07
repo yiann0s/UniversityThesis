@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.yannis.thesis.movierecommendationapp.data.local.UserRatesMovie
 import com.yannis.thesis.movierecommendationapp.domain.repositories.RatingRepository
+import com.yannis.thesis.movierecommendationapp.domain.usecases.GenerateRecommendationsUseCase
 import java.util.Date
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,7 @@ data class MovieDetailUiState(
 
 class MovieDetailViewModel(
     private val ratingRepository: RatingRepository,
+    private val generateRecommendations: GenerateRecommendationsUseCase,
     private val userId: String?,
     private val movieId: String?
 ) : ViewModel() {
@@ -62,6 +64,7 @@ class MovieDetailViewModel(
                             releaseDate
                         )
                     )
+                    userId?.let { generateRecommendations.invoke(it) }
                 }
             }.onSuccess {
                 _uiState.value = _uiState.value.copy(
@@ -84,13 +87,19 @@ class MovieDetailViewModel(
 
 class MovieDetailViewModelFactory(
     private val ratingRepository: RatingRepository,
+    private val generateRecommendations: GenerateRecommendationsUseCase,
     private val userId: String?,
     private val movieId: String?
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MovieDetailViewModel::class.java)) {
-            return MovieDetailViewModel(ratingRepository, userId, movieId) as T
+            return MovieDetailViewModel(
+                ratingRepository,
+                generateRecommendations,
+                userId,
+                movieId
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

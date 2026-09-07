@@ -13,15 +13,10 @@ import com.yannis.thesis.movierecommendationapp.domain.repositories.UserReposito
 import com.yannis.thesis.movierecommendationapp.domain.usecases.GenerateRecommendationsUseCase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieRecommendationApp : Application() {
-    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     @JvmField var loggedInUserId: String? = null
     lateinit var userRepository: UserRepository
         private set
@@ -31,7 +26,8 @@ class MovieRecommendationApp : Application() {
         private set
     lateinit var movieRepository: com.yannis.thesis.movierecommendationapp.domain.repositories.MovieRepository
         private set
-    private lateinit var generateRecommendations: GenerateRecommendationsUseCase
+    lateinit var generateRecommendations: GenerateRecommendationsUseCase
+        private set
 
     override fun onCreate() {
         super.onCreate()
@@ -59,18 +55,7 @@ class MovieRecommendationApp : Application() {
             recommendationRepository = recommendationRepository,
             movieRepository = movieRepository
         )
-        applicationScope.launch {
-            showAllUsers()
-            movieRecommendationAlgorithm()
-        }
     }
-
-    fun showAllUsers() {
-        userRepository.getAll()
-    }
-
-    fun movieRecommendationAlgorithm() =
-        generateRecommendations.invoke("3c5303e9-0b5e-493a-98e8-184893dbb261")
 
     companion object {
         private var appInstance: MovieRecommendationApp? = null

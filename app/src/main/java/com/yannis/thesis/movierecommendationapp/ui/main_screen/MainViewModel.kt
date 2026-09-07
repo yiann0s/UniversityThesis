@@ -39,6 +39,7 @@ class MainViewModel(
 
     fun loadHome() {
         viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
             val home = withContext(Dispatchers.IO) {
                 recommendationRepository.findAllForUserByRating(userId) to
                     ratingRepository.findAllForUser(userId)

@@ -6,12 +6,16 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -124,6 +128,16 @@ fun AppNavHost() {
                 )
             )
             val state by viewModel.uiState.collectAsStateWithLifecycle()
+            val lifecycleOwner = LocalLifecycleOwner.current
+            DisposableEffect(lifecycleOwner) {
+                val observer = LifecycleEventObserver { _, event ->
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        viewModel.loadHome()
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+            }
             MainScreen(
                 state = state,
                 onSearch = viewModel::search,
@@ -153,6 +167,7 @@ fun AppNavHost() {
             val viewModel: MovieDetailViewModel = viewModel(
                 factory = MovieDetailViewModelFactory(
                     ratingRepository = app.ratingRepository,
+                    generateRecommendations = app.generateRecommendations,
                     userId = userId,
                     movieId = movieId
                 )
@@ -198,6 +213,7 @@ fun AppNavHost() {
                 factory = RecommendedMovieDetailViewModelFactory(
                     ratingRepository = app.ratingRepository,
                     recommendationRepository = app.recommendationRepository,
+                    generateRecommendations = app.generateRecommendations,
                     userId = userId,
                     movieId = movieId
                 )

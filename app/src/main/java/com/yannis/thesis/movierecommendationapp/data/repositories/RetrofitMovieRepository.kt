@@ -10,7 +10,6 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.HttpException
 import retrofit2.Response
 
@@ -18,23 +17,8 @@ class RetrofitMovieRepository(
     private val api: APIService,
     private val apiKey: String
 ) : MovieRepository {
-    override fun getMovieDetails(
-        movieId: Int,
-        onSuccess: (Movie?) -> Unit,
-        onFailure: (Throwable) -> Unit
-    ) {
-        api.getMovieDetails(movieId, apiKey).enqueue(object : Callback<Movie?> {
-            override fun onResponse(
-                call: Call<Movie?>,
-                response: Response<Movie?>
-            ) = onSuccess(if (response.isSuccessful) response.body() else null)
-
-            override fun onFailure(
-                call: Call<Movie?>,
-                throwable: Throwable
-            ) = onFailure(throwable)
-        })
-    }
+    override suspend fun getMovieDetails(movieId: Int): Movie? =
+        api.getMovieDetails(movieId, apiKey).awaitBody()
 
     override suspend fun search(category: String, query: String): List<Movie> {
         return when (category) {
@@ -64,7 +48,7 @@ class RetrofitMovieRepository(
 
     private suspend fun <T> Call<T>.awaitBody(): T? =
         suspendCancellableCoroutine { continuation ->
-            enqueue(object : Callback<T> {
+            enqueue(object : retrofit2.Callback<T> {
                 override fun onResponse(call: Call<T>, response: Response<T>) {
                     if (response.isSuccessful) {
                         continuation.resume(response.body())

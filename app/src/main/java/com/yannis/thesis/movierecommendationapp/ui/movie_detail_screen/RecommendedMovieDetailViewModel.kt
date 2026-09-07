@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.yannis.thesis.movierecommendationapp.data.local.UserRatesMovie
 import com.yannis.thesis.movierecommendationapp.domain.repositories.RatingRepository
 import com.yannis.thesis.movierecommendationapp.domain.repositories.RecommendationRepository
+import com.yannis.thesis.movierecommendationapp.domain.usecases.GenerateRecommendationsUseCase
 import java.util.Date
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,7 @@ data class RecommendedMovieDetailUiState(
 class RecommendedMovieDetailViewModel(
     private val ratingRepository: RatingRepository,
     private val recommendationRepository: RecommendationRepository,
+    private val generateRecommendations: GenerateRecommendationsUseCase,
     private val userId: String?,
     private val movieId: String?
 ) : ViewModel() {
@@ -55,6 +57,7 @@ class RecommendedMovieDetailViewModel(
                             releaseDate
                         )
                     )
+                    userId?.let { generateRecommendations.invoke(it) }
                 }
             }.onSuccess {
                 _uiState.value = _uiState.value.copy(
@@ -79,6 +82,7 @@ class RecommendedMovieDetailViewModel(
 class RecommendedMovieDetailViewModelFactory(
     private val ratingRepository: RatingRepository,
     private val recommendationRepository: RecommendationRepository,
+    private val generateRecommendations: GenerateRecommendationsUseCase,
     private val userId: String?,
     private val movieId: String?
 ) : ViewModelProvider.Factory {
@@ -88,6 +92,7 @@ class RecommendedMovieDetailViewModelFactory(
             return RecommendedMovieDetailViewModel(
                 ratingRepository,
                 recommendationRepository,
+                generateRecommendations,
                 userId,
                 movieId
             ) as T
